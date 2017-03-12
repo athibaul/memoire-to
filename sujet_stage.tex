@@ -1,0 +1,35 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[francais]{babel}
+
+\title{Algorithmes proximaux à métrique on euclidienne et application au transport optimal}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+L'objectif du stage est d'étudier les méthodes d'optimisation proximales pour des problèmes de minimisation dans le cadre convexe et non lisse.\\
+L'utilisation de métriques non euclidiennes peut rendre le calcul de l'opérateur proximal de certaines fonctions explicite [1,2], ce qui permet d'obtenir des algorithmes de minimisation plus rapides en pratique.\\
+Il sera intéressant de regarder l'intégration de métriques non euclidiennes (comme l'entropie négative) pour différents types d'algorithmes proximaux [3] et de faire le lien avec l'algorithme de Sinkhorn,
+utilisé notamment pour le calcul de coût de transport optimal [4].
+
+\textbf{Dates~:} 5 juin-28 juillet environ.
+
+\textbf{Encadrants~:} Charles Dossal (Maitre de Conférence, Université de Bordeaux), Nicolas Papadakis (Chargé de recherche CNRS).
+
+\textbf{Lieu~:} Institut de Mathématiques de Bordeaux, UMR 5251, 351 Cours de la Libération, 33405 Talence Cedex
+
+\begin{thebibliography}{9}
+\bibitem{b1}
+A. Chambolle, T. Pock.  On the ergodic convergence rates of a first-order primal-dual algorithm.  Journal of Mathematical Programming, 2016.
+\bibitem{b2}
+H. Baushcke, J. Bolte, M. Teboulle. A Descent Lemma Beyond Lipschitz Gradient Continuity: First-Order Methods Revisited and Application. MATHEMATICS OF OPERATIONS RESEARCH, 2016
+\bibitem{b3}
+H. Raguet, J. Fadili, G. Peyré. A Generalized Forward-Backward splitting, SIAM Journal on Imaging Sciences, 2013.
+\bibitem{b4}
+J-D. Benamou, G. Carlier, M. Cuturi, L. Nenna, G. Peyré. Iterative Bregman Projections for Regularized Transportation Problems. SIAM Journal on Scientific Computing, 2015.
+\end{thebibliography}
+
+\end{document}
