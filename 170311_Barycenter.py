@@ -18,14 +18,14 @@ lbd : coefficient of each image in the barycenter
 gamma : regularization strength
 """
 def barycenter(P,lbd=None,gamma=0.1**2,iterations=100):
-    global b,g,g2
+    global b,g,g2,xi
     K = np.size(P,2)
     N = np.size(P,0)
-    n = N # width of the convolution kernel
+    n = 2*(N//2)+1 # width of the convolution kernel
     t = np.linspace(-n/(2*N),n/(2*N),n)
     g = normalize(np.exp(-t**2 / gamma)); g2 =  np.outer(g,g)
     def xi(x):
-        return convolve2d(x,g2,'same')
+        return convolve2d(x,g2,'same')+1e-19
 
     if lbd is None:
         lbd = np.ones(K)/K
@@ -45,7 +45,8 @@ def barycenter(P,lbd=None,gamma=0.1**2,iterations=100):
             b[:,:,k] = np.divide(q,xi(a[:,:,k]))
             
         err.append(np.array([norme(a[:,:,k] * xi(b[:,:,k]) - P[:,:,k]) for k in range(K)]))
-    
+        if np.any(np.isnan(a)):
+            return [[0]]
     return q
 
 
@@ -102,15 +103,39 @@ def test2():
     plt.subplot(122);plt.imshow(rep2)
     plt.show()
     
-    n = 2*n+1
+    plot_interpol(rep1,rep2,gamma=0.05**2)
+
+
+
+def plot_interpol(rep1,rep2,number_of_subplots=5,gamma=0.05**2):
+    n = len(rep1)
+    rep1 = normalize(rep1); rep2 = normalize(rep2)
     P = np.zeros((n,n,2))
     P[:,:,0] = rep1; P[:,:,1] = rep2
-    number_of_subplots = 5
     coefs = np.linspace(0,1,number_of_subplots)
     for i,alpha in enumerate(coefs):
+        print("Computing subplot",i+1,"/",number_of_subplots)
         lbd = np.array([alpha, 1-alpha])
-        q = barycenter(P,lbd,gamma=0.05**2)
+        q = barycenter(P,lbd,gamma=gamma)
         ax1 = plt.subplot(1,number_of_subplots,i+1)
         ax1.imshow(q)
     plt.show()
-    
+
+def circle(xx,yy,cx,cy,r):
+    return np.array([[(x-cx)**2+(y-cy)**2 < r**2 for y in yy] for x in xx])
+
+def test3():
+    n = 50
+    xx = np.arange(n+1); yy = np.arange(n+1)
+    rep1 = circle(xx,yy,n/2,n/2,2*n/5)
+    rep2 = circle(xx,yy,n/4,n/4,n/6) + circle(xx,yy,3*n/4,3*n/4,n/6) + circle(xx,yy,3*n/4,n/4,n/6)
+    plot_interpol(rep1,rep2,gamma=0.05**2)
+
+def test4():
+    n = 50
+    xx = np.arange(n+1); yy = np.arange(n+1)
+    def f1(x,y):
+        return np.logical_or(y<n/5, np.logical_or(y>4*n/5, abs(x-y) < n/10))
+    rep1 = np.fromfunction(f1,(n+1,n+1))
+    rep2 = circle(xx,yy,n/2,n/2,2*n/5)
+    plot_interpol(rep1,rep2)
