@@ -17,7 +17,7 @@ P : array of square images
 lbd : coefficient of each image in the barycenter
 gamma : regularization strength
 """
-def barycenter(P,lbd=None,gamma=0.04**2):
+def barycenter(P,lbd=None,gamma=0.1**2,iterations=100):
     global b,g,g2
     K = np.size(P,2)
     N = np.size(P,0)
@@ -32,7 +32,7 @@ def barycenter(P,lbd=None,gamma=0.04**2):
     b = np.ones((N,N,K)); a = np.ones((N,N,K))
     
     err = []
-    for l in range(100):
+    for l in range(iterations):
         for k in range(K):
             a[:,:,k] = np.divide(P[:,:,k],xi(b[:,:,k]))
             
@@ -77,9 +77,9 @@ def test1():
     rep1 = normalize(np.array([[(x>3)*(x<10) == (y>n/2) for x in range(n)] for y in range(n)]))
     rep2 = np.outer(Gaussian(t,0.1*n,0.05*n),Gaussian(t,0.5*n,0.2*n))
     rep2 = normalize(rep2)
+    
     P = np.zeros((n,n,2))
     P[:,:,0] = rep1; P[:,:,1] = rep2
-    
     number_of_subplots = 5
     coefs = np.linspace(0,1,number_of_subplots)
     for i,alpha in enumerate(coefs):
@@ -87,3 +87,30 @@ def test1():
         ax1 = plt.subplot(1,number_of_subplots,i+1)
         ax1.imshow(barycenter(P,lbd))
     plt.show()
+
+
+
+def test2():
+    n = 40//2
+    r = 4*n//5
+    r1 = n//2
+    rep1 = [[x*x+y*y < r*r for y in range(-n,n+1)] for x in range(-n,n+1)]
+    rep2 = [[ (abs(x-y) < r1 or abs(x+y) < r1) for y in range(-n,n+1)] for x in range(-n,n+1)]
+    rep1 = normalize(np.array(rep1))
+    rep2 = normalize(np.array(rep2))
+    plt.subplot(121);plt.imshow(rep1)
+    plt.subplot(122);plt.imshow(rep2)
+    plt.show()
+    
+    n = 2*n+1
+    P = np.zeros((n,n,2))
+    P[:,:,0] = rep1; P[:,:,1] = rep2
+    number_of_subplots = 5
+    coefs = np.linspace(0,1,number_of_subplots)
+    for i,alpha in enumerate(coefs):
+        lbd = np.array([alpha, 1-alpha])
+        q = barycenter(P,lbd,gamma=0.05**2)
+        ax1 = plt.subplot(1,number_of_subplots,i+1)
+        ax1.imshow(q)
+    plt.show()
+    
