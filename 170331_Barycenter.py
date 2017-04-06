@@ -25,7 +25,7 @@ def barycenter(P,lbd=None,gamma=0.1**2,iterations=100):
     t = np.linspace(-n/(2*N),n/(2*N),n)
     g = normalize(np.exp(-t**2 / gamma)); g2 =  np.outer(g,g)
     def xi(x):
-        return convolve2d(x,g2,'same')+1e-19
+        return convolve(convolve(x,g,'same').transpose(),g,'same').transpose()+1e-19
 
     if lbd is None:
         lbd = np.ones(K)/K
