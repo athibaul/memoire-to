@@ -1,5 +1,7 @@
 \input{../utils.tex}
 
+\DeclareMathOperator{\diag}{\bold{diag}}
+
 \title{Transport optimal et régularisation}
 \author{Alexis THIBAULT}
 \date{2017}
@@ -98,7 +100,13 @@ L'algorithme du simplexe est relativement compliqué, ne peut pas bénéficier d
 Dans le but de calculer le transport optimal de façon plus efficace, une idée présentée dans \cite{cuturi13} consiste à se limiter aux solutions \og assez régulières \fg, en ajoutant un terme entropique dans l'expression du coût à minimiser. Cette méthode est en fait assez naturelle~: elle a simplement tendance à légèrement lisser les solutions. Le problème devient alors strictement convexe, ce qui permet d'assurer l'unicité de la solution, et le fait d'utiliser l'entropie assure que le plan de transport $\gamma$ a tous ses coefficients non nuls, ce qui simplifie le travail. En effet, la forme particulière du coût à régularisation entropique fait qu'il existe alors des algorithmes à convergence rapide vers la solution consistant en de simples produits matriciels --- et qui peuvent donc être implémentés efficacement sur GPU.
 
 \subsection{Formulation}
-On se limite dorénavant aux cas discrets. Le coût de transport pour le plan $\gamma \in \Pi(\mu,\nu)$, selon la formulation de Kantorovich, était~:
+On se limite dorénavant aux cas discrets. Le plan de transport s'écrit 
+\[
+\Pi(\mu,\nu) = \left\{ \gamma \in \IR_+^{X \times Y} \quad\middle|\quad
+\forall i \in X,\,\sum_{j \in Y} \gamma_{i,j} = \mu_i \quad
+ \text{et} \quad
+\forall j \in Y ,\,\sum_{i \in X} \gamma_{i,j} = \nu_j \right\} \]
+Le coût de transport selon la formulation de Kantorovich (non régularisé), était~:
 \[K(\gamma) = \sum_{i,j} c_{i,j} \gamma_{i,j} \]
 On définit maintenant le coût régularisé comme~:
 \[
@@ -107,9 +115,11 @@ K^\epsilon (\gamma)
  &= K(\gamma) + \epsilon S(\gamma) \\
 &= \sum_{i,j} c_{i,j} \gamma_{i,j} + \epsilon \sum_{i,j} \gamma_{i,j} \log(\gamma_{i,j}) 
 \end{split}\]
-Quitte à diminuer le nombre de points de $X$ ou de $Y$, on peut supposer que tous les coefficients $\mu_i$ et $\nu_j$ sont non nuls.
+On appelle $S(\gamma)$ l'\emph{entropie} de $\gamma$, que l'on prolonge par continuité si certains coefficients de $\gamma$ sont nuls.
+
+Quitte à diminuer le nombre de points de $X$ ou de $Y$, on peut supposer que tous les coefficients $\mu_i$ et $\nu_j$ sont non nuls, auquel cas on a le lemme suivant.
 \begin{lemma}
-Le coût $K^\epsilon$ est une fonction strictement convexe, dont l'unique solution $\gamma^\epsilon$ a tous ses coefficients non nuls.
+Le coût $K^\epsilon$ est strictement convexe. Son unique minimum $\gamma^\epsilon$ a tous ses coefficients strictement positifs.
 \end{lemma}
 \begin{proof}
 \begin{description}
@@ -144,10 +154,10 @@ La fonction $\epsilon \mapsto \gamma^\epsilon$ admet une limite $\gamma^0$ en 0.
 Ce $\gamma^0$ est un minimum de $K$, qui minimise l'entropie sur l'ensemble des minima de $K$.
 \end{lemma}
 \begin{proof}
-Notons $\bar{\gamma}$ le minimiseur de l'entropie $S$ sur le convexe $\argmin_{\Pi(\mu,\nu)} K$, et le coût correspondant $K_{opt} := K(\bar{\gamma})$.
+Remarquons que $\argmin_{\Pi(\mu,\nu)} K$ est convexe par linéarité de $K$, fermé dans $\Pi(\mu,\nu)$ car c'est l'image réciproque d'un singleton, puis compact et non vide par compacité de $\Pi(\mu,\nu)$.
+Notons $\bar{\gamma}$ l'unique minimiseur de l'entropie $S$ sur $\argmin_{\Pi(\mu,\nu)} K$, et le coût correspondant $K_{opt} := K(\bar{\gamma})$.
 
-On peut pour toute suite de $\epsilon$ tendant vers 0, extraire une sous-suite telle que $\gamma^\epsilon$ admette une limite $\gamma^0$.
-Montrons que la seule limite possible est $\bar{\gamma}$.
+On peut pour toute suite de $\epsilon$ tendant vers 0, extraire une sous-suite telle que $\gamma^\epsilon$ admette une limite $\gamma^0$. Montrons que cette limite est toujours $\bar{\gamma}$.
 
 Le minimiseur $\gamma^\epsilon$ de $K^\epsilon$ est également minimiseur de 
 \[C_\epsilon(\gamma) := \frac{K(\gamma) - K_{opt}}{\epsilon} + S(\gamma) \]
@@ -161,7 +171,58 @@ Ceci permet de conclure que l'on a bien la convergence de $\epsilon \mapsto \gam
 \end{proof}
 
 \subsection{Forme de la solution}
-On pourrait croire que la régularisation entropique complique les calculs, car en forçant tous les coefficients à être non nuls, elle ajoute des degrés de liberté au problème. Pour deux histogrammes à $n$ points, on risque de se retrouver avec $n^2$ coefficients à calculer. En fait, nous allons voir que la solution du problème régularisé a une forme particulière, et que les inconnues sont seulement au nombre de $2n$.
+On pourrait croire que la régularisation entropique complique les calculs, car en forçant tous les coefficients à être non nuls, elle ajoute des degrés de liberté au problème. Pour deux histogrammes à $n$ points, on risque de se retrouver avec $n^2$ coefficients à calculer. En fait, nous allons voir que la solution du problème régularisé a une forme particulière, et que les inconnues sont seulement au nombre de $2n$, ceci grâce à des considérations de dualité.
+
+\begin{definition}
+Soit $L : A \times B \rightarrow \IR$. On appelle \emph{point-selle} de $L$ un couple $(a_0,b_0) \in A\times B$ tel que~:
+\[ \forall (a,b) \in A\times B, \quad L(a_0,b) \le L(a_0,b_0) \le L(a,b_0) \]
+\end{definition}
+
+\begin{lemma}
+Le Lagrangien associé à $K^\epsilon$~:
+\[
+L(\gamma, p, q) = K^\epsilon(\gamma) +
+ \sum_i p_i \left(\sum_j \gamma_{i,j} - \mu_i\right) + 
+ \sum_j q_j\left(\sum_i \gamma_{i,j} - \nu_j\right)
+\]
+admet un point-selle $(\gamma^\epsilon,p^\epsilon,q^\epsilon)$, où $\gamma^\epsilon$ est, comme auparavent, le minimiseur de $K^\epsilon$.
+\end{lemma}
+\begin{proof}
+On peut considérer que $K^\epsilon$ est défini sur tout $U = \IR_{+*}^{nm}$ par la même formule que sur $\Pi(\mu,\nu)$. Du fait que $\gamma^\epsilon$ est un minimum de $K^\epsilon$ sur $\Pi(\mu,\nu) \cap U$, on déduit que le gradient de $K^\epsilon$ en $\gamma^\epsilon$ est orthogonal à $\Pi(\mu,\nu)$. Autrement dit, il existe des multiplicateurs de Lagrange.
+
+En effet, pour tout $v \in \IR^{nm}$ assez petit vérifiant $\sum_i v_{i,j} = \sum_j v_{i,j} = 0$, et $\eta \in \IR$, $|\eta|$ assez petit, on a~:
+\[ \begin{split}
+K^\epsilon(\gamma^\epsilon + \eta v) &\ge K^\epsilon(\gamma^\epsilon) \\
+K^\epsilon(\gamma^\epsilon) + \eta \langle \nabla K^\epsilon(\gamma^\epsilon) , v \rangle  &\ge K^\epsilon(\gamma^\epsilon) \\
+\langle \nabla K^\epsilon(\gamma^\epsilon) , v \rangle &= 0
+\end{split}\]
+Le gradient de $K^\epsilon$ en $\gamma^\epsilon$ est donc dans l'orthogonal du noyau de $B : \gamma \mapsto ((\sum_j \gamma_{i,j})_i, (\sum_i \gamma_{i,j})_j)$, c'est-à-dire dans l'image de l'application linéaire transposée $B^\transpose : ((p_i)_i,(q_j)_j) \mapsto (p_i+q_j)_{i,j}$.
+
+Il existe donc $(p^\epsilon,q^\epsilon)$ deux vecteurs tels que~:
+\[\begin{split}
+\nabla K^\epsilon(\gamma^\epsilon) &= B^\transpose (p^\epsilon,q^\epsilon)  \\
+c_{i,j} + \epsilon (1+\log(\gamma_{i,j})) &= p^\epsilon_i + q^\epsilon_j
+\end{split}\]
+
+Montrons qu'alors $(\gamma^\epsilon,p^\epsilon,q^\epsilon)$ est point-selle de $L$.
+
+La première inégalité est ici une égalité, et découle du fait que pour tous $(p,q) \in \IR^{n+m}$, les termes impliquant $p$ et $q$ dans le Lagrangien sont nuls~:
+\[ L(\gamma^\epsilon,p,q) = L(\gamma^\epsilon,p^\epsilon,q^\epsilon) = K^\epsilon(\gamma^\epsilon) \]
+
+La seconde inégalité de point-selle découle du fait que $\gamma^\epsilon$ minimise $K^\epsilon$, et que pour tout $\gamma \in \Pi(\mu,\nu)$ les autres termes du Lagrangien sont nuls.
+\end{proof}
+
+
+\begin{lemma}
+Pour tout $\epsilon > 0$, le minimiseur $\gamma^\epsilon$ de $K^\epsilon$ est de la forme~:
+\[
+\gamma^\epsilon = \diag(a)\;G\,\diag(b)
+\]
+où $a$ et $b$ sont deux vecteurs, uniques à un facteur près, et $G = (e^{-c_{i,j}/\epsilon})$ est l'exponentielle de $-c/\epsilon$, coefficient par coefficient.
+\end{lemma}
+\begin{proof}
+
+\end{proof}
 
 
 \section{Algorithme de Sinkhorn}
