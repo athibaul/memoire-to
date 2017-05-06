@@ -88,20 +88,26 @@ def Gaussian(t,t0,sigma):
 def normalize(p):
     return p/sum(p)
 
-def show_transport(n):
+def show_transport(n,lbd=1):
     t = np.arange(n)
     r0 = normalize(Gaussian(t,n*0.1,n/20)*0.5+Gaussian(t,n*0.5,n/10)+0.02)
     r1 = normalize(0.5*Gaussian(t,n*0.8,n/20)+Gaussian(t,n*0.5,n/30)+0.02)
-    P = ot_sinkhorn(distances(len(r0),p=2),r0,r1,lbd=1,epsilon=1e-3)
+    P = ot_sinkhorn(distances(len(r0),p=2),r0,r1,lbd=lbd,epsilon=1e-3,iter_bound=10000)
     ax = plt.subplot2grid((3,3),(1,1),rowspan=2,colspan=2)
-    ax.imshow(np.log(P+1e-5))
+    ax.imshow(np.log(P+1e-5),interpolation='bicubic')
     ax.set_aspect('auto')
+    ax.get_xaxis().set_ticks([])
+    ax.get_yaxis().set_ticks([])
     ax = plt.subplot2grid((3,3),(1,0),rowspan=2)
     ax.plot(r0,t)
     ax.invert_xaxis()
     ax.invert_yaxis()
+    ax.get_xaxis().set_ticks([])
+    ax.get_yaxis().set_ticks([])
     ax = plt.subplot2grid((3,3),(0,1),colspan=2)
     ax.plot(t,r1)
+    ax.get_xaxis().set_ticks([])
+    ax.get_yaxis().set_ticks([])
     plt.show()
 
-show_transport(1000)
+show_transport(200,0.5)

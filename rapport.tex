@@ -1,0 +1,197 @@
+\input{../utils.tex}
+
+\title{Transport optimal et régularisation}
+\author{Alexis THIBAULT}
+\date{2017}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\section{Transport optimal}
+
+\subsection{Formulation du problème}
+La formulation initiale du problème de transport est due à Monge. Il est question de transporter une mesure de probabilité sur $\mu$ sur $\IR^d$ vers une autre $\nu$ par une application $T\,:\,\IR^d \rightarrow \IR^d$, de façon à ce que $\nu$ soit la mesure image de $\mu$ par $T$, en minimisant la quantité~:
+\[M(T) = \int_{\IR^d} |T(x)-x|\,d\mu(x)\]
+Il est possible de généraliser le problème en remplaçant $|T(x)-x|$ par un coût quelconque $c(T(x),x)$, ce qui permet de considérer que le problème n'est pas limité à $\IR^d$. On peut aussi décider que les espaces de départ et d'arrivée peuvent être différents.
+
+Cette première formulation a des défauts~: il n'existe pas toujours une application $T$ envoyant $\mu$ sur $\nu$. Un contre-exemple direct est celui où $\mu$ est une distribution de Dirac et où $\nu$ est une distribution non localisée en un point, l'image de $\mu$ par $T$ étant alors toujours $\delta(x-T(0))$. Ainsi, le problème de Monge sera inutile dans les cas discrets. Il se trouve qu'il est par ailleurs difficile à étudier.
+
+C'est pourquoi Kantorovich a introduit une autre formulation du problème, qui consiste à relâcher les contraintes sur la façon dont le transport s'effectue. Plutôt qu'une application, Kantorovich considère les \emph{plans de transport}~:
+\[\Pi(\mu,\nu) = \{\gamma\;\text{mesure de probabilité sur}\,X\times Y\;|\;(\pi_X)_\# \gamma = \mu,\; (\pi_Y)_\# \gamma = \nu\}\]
+où $(\pi_X)_\# \gamma$ dénote la mesure marginale de $\gamma$, c'est-à-dire la mesure image par projection sur $X$. \' Etant donnée une fonction de coût $c\, : \, X\times Y \rightarrow \IR\,\cup\,\{+\infty\}$ , la quantité que Kantorovich veut minimiser est alors~:
+\[K(\gamma) = \int_{X\times Y} c\,d\gamma \; ,\quad \text{où} \quad \gamma \in \Pi(\mu,\nu)\]
+\begin{theoreme}[Existence d'un plan de transport optimal]
+On suppose que $X$ et $Y$ sont deux ensembles finis, chacun muni d'une loi de probabilité (respectivement $\mu$ et $\nu$). Le coût $c$ est supposé positif ou nul. Alors il existe un plan de transport $\gamma \in \Pi(\mu,\nu)$ qui minimise le coût de transport $K(\gamma)$.
+\end{theoreme}
+La preuve d'un résultat plus général se trouve dans \cite{villani08}. Puisqu'on s'intéresse ici au cas discret pour les applications numériques, le résultat nous suffira dans le cadre beaucoup plus simple des ensembles finis.
+\begin{proof}
+On identifie $X$ à $\{1,\ldots,n\}$ et $Y$ à $\{1,\ldots,m\}$. Alors $\Pi(\mu,\nu)$ est immédiatement assimilable à une partie de $\IR^{\{1,\ldots,n\}\times\{1,\ldots,m\}}$, espace de dimension finie. $\Pi(\mu,\nu)$ est non vide car il contient le couplage indépendant $\gamma_{i,j} = \mu_i \nu_j$. Il est fermé car défini par un nombre fini d'égalités ($\sum_i \gamma_{i,j} = \nu_j$ ; $\sum_j \gamma_{i,j} = \mu_i$) et d'inégalités larges ($\gamma_{i,j} \ge 0$), qui passent donc à la limite. Il est borné car pour $\gamma \in \Pi(\mu,\nu)$, $0 \le \gamma_{i,j} \le 1$ pour tout $(i,j)$. Ainsi $\Pi(\mu,\nu)$ est un compact de $\IR^{\{1,\ldots,n\}\times\{1,\ldots,m\}}$. Enfin, $\gamma \mapsto \int c\,d\gamma = \sum_{i,j} c_{i,j} \gamma_{i,j}$ est continue sur $\IR^{\{1,\ldots,n\}\times\{1,\ldots,m\}}$, donc admet un minimum sur le compact non vide $\Pi(\mu,\nu)$.
+\end{proof}
+
+\subsection{Métrique de Wasserstein}
+On s'intéresse maintenant au coût de transport optimal~:
+\[C(\mu,\nu) = \min_{\gamma \in \Pi(\mu,\nu)} K(\gamma) \]
+On peut considérer ce coût comme une sorte de distance entre $\mu$ et $\nu$. Quelques hypothèses supplémentaires sont cependant nécessaires pour pouvoir affirmer que ceci constitue bien une distance au sens mathématique. Il suffit par exemple que $X=Y$ et que le coût soit défini à partir d'une distance.
+
+\begin{definition}[Métrique de Wasserstein]
+Soit $(X,d)$ espace métrique, et $p \in \IR, p \ge 1$. On définit la \emph{distance de Wasserstein} d'ordre $p$ entre $\mu$ et $\nu$ comme~:
+\[\begin{split}
+W_p(\mu,\nu) & = \left(\inf_{\gamma \in \Pi(\mu,\nu)} \int_{X\times X} d(x,y)^p\,d\gamma(x,y) \right) \\
+& = \inf_{\gamma \in \Pi(\mu,\nu)} \left[\mathbb{E}\,d(X,Y)^p \right]^\frac{1}{p}, \quad (X,Y) \leadsto \gamma
+\end{split}\]
+\end{definition}
+
+\begin{proof}[Preuve que $W_p$ vérifie les axiomes d'une distance]
+La positivité et la symétrie sont claires.
+
+Supposons $W_p(\mu,\nu) = 0$. Alors le plan de transport minimisant $K$ a son support inclus dans la diagonale $\{x=y\}$, et $\nu$ est la mesure image de $\mu$ par l'application identité~; autrement dit $\nu = \mu$.
+
+Prouvons l'inégalité triangulaire. Soient $\mu^1$, $\mu^2$ et $\mu^3$ trois mesures de probabilité sur $X$. Soit $\gamma^{12}$ plan de transport optimal pour $(\mu^1,\mu^2)$ et $\gamma^{23}$ plan de transport optimal pour $(\mu^2,\mu^3)$. On construit alors une loi jointe sur $X^3$ par la formule~:
+\[\gamma^{123}(A) = \frac{\gamma^{12}(A_{12}) \gamma^{23}(A_{23})}{\mu^2(A_2)}\]
+où $A_{12}$ est la projection sur les coordonnées 1 et 2 de l'ensemble $A$, et de même pour $A_{13}$ et $A_{2}$~;
+de sorte que les marginales de $\gamma^{123}$ soient $\mu^1$, $\mu^2$ et $\mu^3$. On note \[\gamma^{13}(B) = \sum_{j} \gamma^{123}(\{(x_1,x_2,x_3) \in X^3 \,|\, (x_1,x_3) \in B\})\] Alors~:
+\[\begin{split}
+W_p(\mu^1,\mu^3) & \le \left( \int_{x_1,x_3} d(x_1,x_3)^p \;d\gamma^{13}(x_1,x_3) \right)^{1/p} \\
+&\le \left( \int_{x_1,x_2,x_3} (d(x_1,x_2) + d(x_2,x_3))^p \;d\gamma^{123}(x_1,x_2,x_3) \right)^{1/p} \\
+& \le \left( \int_{x_1,x_2} d(x_1,x_2)^p \;d\gamma^{12}(x_1,x_2) \right)^{1/p} + \left( \int_{x_2,x_3} d(x_2,x_3)^p \;d\gamma^{23}(x_2,x_3) \right)^{1/p} \\
+& \le W_p(\mu^1,\mu^2) + W_p(\mu^2,\mu^3)
+\end{split}\]
+où la troisième inégalité est une application de l'inégalité de Minkowski.
+\end{proof}
+
+Lorsque l'on travaille avec des espaces non compacts, il faut faire attention à ce que les intégrales définissant $W_p$ convergent effectivement. On se restreint donc aux mesures telles qui admettent un \og moment d'ordre $p$\fg, au sens suivant~:
+\[P_p(X) = \left\{\mu \in P(X)\,|\, \int d(x_0,x)^p d\mu(x) < +\infty \right\} \]
+où $x_0 \in X$ est quelconque. Cet espace ne dépend pas de $x_0$.
+
+La topologie induite par $W_p$ sur l'espace $P_p(X)$ vérifie alors des propriétés assez satisfaisantes (prouvées dans \cite{villani08}, page 104)~: 
+\begin{theoreme}[Topologie des espaces de Wasserstein]
+Si $X$ est complet et séparable, alors $P_p(X) = (P(X),W_p)$ est un espace métrique complet et séparable. De plus, toute mesure de probabilité est limite d'une suite de mesures à support fini.
+\end{theoreme}
+De plus, l'injection de $X$ dans $P_p(X)$, qui à chaque point associe la mesure de Dirac unitaire en ce point est une isométrie.
+On visualise assez bien la preuve de la deuxième partie du théorème dans le cas particulier où $X = [0;1]^d$.
+\begin{proof}
+Soit $\mu \in P([0;1]^d)$. Pour $n \in \IN$, on peut diviser le cube en $2^{nd}$ cubes $(C_{i_1,\ldots,i_d})_{0 \le i_1,\ldots,i_d < 2^n}$ de côté $2^{-n}$, et considérer la mesure constituée des pics de Dirac normalisés, pris au coin de chaque cube~:
+\[\nu_n = \sum_{0 \le i_1,\ldots,i_d < 2^n} \mu(C_{i_1,\ldots,i_d}) \delta_{a_{i_1,\ldots,i_d}} 
+\quad \text{où} \quad
+a_{i_1,\ldots,i_d} = 2^{-n}(i_1,\ldots,i_d)^\transpose\]
+Un plan de transport possible de $\mu$ à $\nu_n$ est alors celui qui distribue chaque masse de Dirac sur le cube associé. La distance à parcourir n'étant pas trop grande, le coût du transport est majoré par une quantité qui tend vers 0.
+\[
+\begin{split}
+\forall x \in C_{i_1,\ldots,i_d},\quad d(x,a_{i_1,\ldots,i_d}) & \le 2^{-n} \sqrt{d} \\
+W_p(\mu,\nu_n) &\le \left(\int_{X\times X} d(a,x)^p\,d\gamma(a,x)\right)^{1/p} \\
+&\le \left(\sum_{0 \le i_1,\ldots,i_d < 2^n} \int_{C_{i_1,\ldots,i_d}} d(x,a_{i_1,\ldots,i_d})^p \, d\mu (x) \right)^{1/p} \\
+& \le 2^{-n}\sqrt{d}
+\end{split}
+\]
+Ainsi, $\nu_n \rightarrow_{n \rightarrow +\infty} \mu$.
+\end{proof}
+
+\subsection{Calcul numérique}
+Le problème de Kantorovich est un problème d'optimisation linéaire.
+Le calcul du transport optimal entre histogrammes de taille $n$ dans un espace métrique général prend une complexité $O(d^3 \log(d))$ par la méthode du simplexe.
+L'algorithme du simplexe est relativement compliqué, ne peut pas bénéficier de l'accélération physique d'un GPU, et il peut sembler plus intéressant d'avoir des résultats approchés pour un coût de calcul bien inférieur~: c'est pourquoi nous nous intéresserons à partir de maintenant au problème d'approximation du transport optimal.
+
+\section{Problème régularisé}
+Dans le but de calculer le transport optimal de façon plus efficace, une idée présentée dans \cite{cuturi13} consiste à se limiter aux solutions \og assez régulières \fg, en ajoutant un terme entropique dans l'expression du coût à minimiser. Cette méthode est en fait assez naturelle~: elle a simplement tendance à légèrement lisser les solutions. Le problème devient alors strictement convexe, ce qui permet d'assurer l'unicité de la solution, et le fait d'utiliser l'entropie assure que le plan de transport $\gamma$ a tous ses coefficients non nuls, ce qui simplifie le travail. En effet, la forme particulière du coût à régularisation entropique fait qu'il existe alors des algorithmes à convergence rapide vers la solution consistant en de simples produits matriciels --- et qui peuvent donc être implémentés efficacement sur GPU.
+
+\subsection{Formulation}
+On se limite dorénavant aux cas discrets. Le coût de transport pour le plan $\gamma \in \Pi(\mu,\nu)$, selon la formulation de Kantorovich, était~:
+\[K(\gamma) = \sum_{i,j} c_{i,j} \gamma_{i,j} \]
+On définit maintenant le coût régularisé comme~:
+\[
+\begin{split}
+K^\epsilon (\gamma) 
+ &= K(\gamma) + \epsilon S(\gamma) \\
+&= \sum_{i,j} c_{i,j} \gamma_{i,j} + \epsilon \sum_{i,j} \gamma_{i,j} \log(\gamma_{i,j}) 
+\end{split}\]
+Quitte à diminuer le nombre de points de $X$ ou de $Y$, on peut supposer que tous les coefficients $\mu_i$ et $\nu_j$ sont non nuls.
+\begin{lemma}
+Le coût $K^\epsilon$ est une fonction strictement convexe, dont l'unique solution $\gamma^\epsilon$ a tous ses coefficients non nuls.
+\end{lemma}
+\begin{proof}
+\begin{description}
+\item[Stricte convexité]
+$K$ étant linéaire, il suffit de montrer que $S$ est strictement convexe sur $\Pi(\mu,\nu)$.
+La fonction $\phi\,:\, x \in \IR_+ \mapsto x \log x$, où par convention $0 \log 0 = 0$, est strictement convexe, car $\mathcal{C}^2$, de dérivée seconde strictement positive, et prolongée par continuité en 0.
+Alors pour $(\lambda_k)$ famille finie de réels positifs sommant à 1, on a~:
+\[\begin{split}
+S(\gamma) &= \sum_{i,j} \phi(\gamma_{i,j}) \\
+S\left(\sum_k \lambda_k \gamma^k\right) &= \sum_{i,j} \phi\left(\sum_k \lambda_k \gamma^k_{i,j}\right) \\
+& \le \sum_{i,j} \sum_{k} \lambda_k \phi\left(\gamma^k_{i,j}\right) \\
+& \le \sum_{k} \lambda_k S\left(\gamma^k\right)
+\end{split}\]
+Pour avoir égalité, il faut avoir égalité dans toutes les inégalités de convexité appliqués à la troisième ligne. Il faut donc que pour tout $i,j$, si $\lambda_k$ et $\lambda_{k'}$ sont non nuls, on ait $\gamma_{i,j}^k = \gamma_{i,j}^{k'}$. Mais alors cela implique que $\gamma^k = \gamma^{k'}$, autrement dit le cas est dégénéré. $S$ est donc bien strictement convexe.
+\item[Coefficients non nuls]
+Montrons que le minimum $\gamma^\epsilon$ n'admet pas de coefficients nuls. Prenons $\gamma$ et $i_0,j_0$ tels que $\gamma_{i_0,j_0} = 0$. Posons $\gamma^u$ le transport associé au couplage indépendant~: $\gamma^u_{i,j} = \mu_i \nu_j$, puis pour $t \in [0;1]$,
+\[ \eta^t = (1-t) \gamma + t \gamma^u \quad \in \Pi(\mu,\nu)\]
+On remarque que $\gamma^u$ a tous ses coefficients non nuls. On peut considérer la variation du coût en fonction de $t$~:
+\[\begin{split}
+\frac{d}{dt} K^\epsilon(\eta^t) &= \frac{d}{dt}\left( K(\eta^t) + \epsilon S(\eta^t) \right) \\
+& = - K(\gamma) + K(\gamma^u) + \epsilon \sum_{i,j} \frac{d}{dt} \phi((1-t) \gamma_{i,j} + t \gamma^u_{i,j}) \\
+& = f(t) + \epsilon \sum_{\substack{i,j \\ \gamma_{i,j} = 0}} \gamma^u_{i,j}\frac{d\phi}{dt}(t \gamma^u_{i,j}) 
+\end{split}\]
+où $f$ est bornée au voisinage de 0. Ainsi, pour $t$ assez petit, les termes de droite tendent vers $-\infty$, et la dérivée est négative. On en conclut que $K^\epsilon(\eta^t) < K^\epsilon(\gamma)$ pour $t>0$ assez petit, donc que $\gamma$ n'était pas un minimum.
+\end{description}
+\end{proof}
+
+\subsection{Convergence}
+Nous avons modifié le coût d'une quantité qui tend vers 0 ; mais cela ne signifie a priori pas que les minima $\gamma^\epsilon$ aient un lien avec le minimum $\gamma$ de $K$.
+\begin{lemma}
+La fonction $\epsilon \mapsto \gamma^\epsilon$ admet une limite $\gamma^0$ en 0.
+Ce $\gamma^0$ est un minimum de $K$, qui minimise l'entropie sur l'ensemble des minima de $K$.
+\end{lemma}
+\begin{proof}
+Notons $\bar{\gamma}$ le minimiseur de l'entropie $S$ sur le convexe $\argmin_{\Pi(\mu,\nu)} K$, et le coût correspondant $K_{opt} := K(\bar{\gamma})$.
+
+On peut pour toute suite de $\epsilon$ tendant vers 0, extraire une sous-suite telle que $\gamma^\epsilon$ admette une limite $\gamma^0$.
+Montrons que la seule limite possible est $\bar{\gamma}$.
+
+Le minimiseur $\gamma^\epsilon$ de $K^\epsilon$ est également minimiseur de 
+\[C_\epsilon(\gamma) := \frac{K(\gamma) - K_{opt}}{\epsilon} + S(\gamma) \]
+Du fait que $\bar{\gamma}$ minimise $K$, on a $K - K_{opt} \ge 0$. Ainsi $S(\gamma^\epsilon) \le C_\epsilon(\gamma^\epsilon)$. De plus, comme $\gamma^\epsilon$ minimise $C_\epsilon$, $C_\epsilon(\gamma^\epsilon) \le C_\epsilon(\bar{\gamma}) = S(\bar{\gamma})$. Autrement dit, pour tout $\epsilon$ on a $S(\gamma^\epsilon) \le S(\bar{\gamma})$. Ainsi, par continuité de $S$, $S(\gamma^0) \le S(\bar{\gamma})$.
+
+Montrons que $\gamma^0$ est un minimiseur de $K$. On a $C_\epsilon(\gamma^\epsilon) \le S(\bar{\gamma})$ par le raisonnement précédent. Ainsi~:
+\[K(\gamma^\epsilon) \le K_{opt} + \epsilon (S(\bar{\gamma}) - S(\gamma^\epsilon)) \]
+Le terme $S(\bar{\gamma}) - S(\gamma^\epsilon)$ est borné, donc par passage à la limite $K(\gamma^0) \le K_{opt}$. On a donc que $\gamma^0$ est un minimiseur de $K$, et qu'il a une entropie inférieure à celle de $\bar{\gamma}$. Par unicité du minimiseur de l'entropie sur le convexe $\argmin_{\Pi(\mu,\nu)} K$, on a $\gamma^0 = \bar{\gamma}$.
+
+Ceci permet de conclure que l'on a bien la convergence de $\epsilon \mapsto \gamma^\epsilon$ vers $\bar{\gamma}$ en 0. En effet, dans le cas contraire, il existe un voisinage de $\bar{\gamma}$ et une suite de $\epsilon$ tendant vers 0, restant hors du voisinage. Or, on peut en extraire une suite qui converge vers $\gamma^0 = \bar{\gamma}$, ce qui est une contradiction.
+\end{proof}
+
+\subsection{Forme de la solution}
+On pourrait croire que la régularisation entropique complique les calculs, car en forçant tous les coefficients à être non nuls, elle ajoute des degrés de liberté au problème. Pour deux histogrammes à $n$ points, on risque de se retrouver avec $n^2$ coefficients à calculer. En fait, nous allons voir que la solution du problème régularisé a une forme particulière, et que les inconnues sont seulement au nombre de $2n$.
+
+
+\section{Algorithme de Sinkhorn}
+
+\subsection{Algorithme}
+
+\subsection{Convergence}
+\[\lim_{k \rightarrow +\infty} \gamma^k = \gamma_\epsilon\]
+
+\subsection{Calcul de barycentres}
+\[\min_{\mu} \min_{\gamma_1 \ldots \gamma_n} \sum_i \lambda_i C_\epsilon(\gamma_i) \quad (\gamma_i)^\transpose \mathbbm{1} = \nu_i\]
+
+\section{Exemples et applications}
+
+\subsection{Sinkhorn unidimensionnel}
+-> Convergence linéaire
+-> Image de gamma, variation selon epsilon
+
+\subsection{Applications du calcul de barycentre}
+
+\subsection{Interpolation de formes}
+
+\subsection{Interpolations de nuages de mots}
+
+
+\begin{thebibliography}{99}
+\bibitem{villani08}
+Villani, Cédric. \textit{Optimal transport: old and new.} Vol. 338. Springer Science \& Business Media, 2008.
+\bibitem{cuturi13}
+Cuturi, Marco. ``Sinkhorn distances: Lightspeed computation of optimal transport.'' \textit{Advances in Neural Information Processing Systems.} 2013.
+\end{thebibliography}
+
+\end{document}

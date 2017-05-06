@@ -146,6 +146,8 @@ def ot_interpolation(files=['./discrete_discrete/TEXTSBYAUTHORS/NAPOLEON/pg3567.
     print(M)
     
     epsilon = 10
+    # -> Verifier violation des contraintes
+    # -> Implementation stable ?
     Xi = np.exp(-M/epsilon)
     def xi(v):
         return Xi.dot(v) + 1e-50
@@ -201,17 +203,19 @@ def interpolated_lipsum(ot_interp,total=10000):
         out += words[w_i] + " "
     return out
 
-def show_interp(files = ['./discrete_discrete/TEXTSBYAUTHORS/ROWLING/HP1.txt','./discrete_discrete/TEXTSBYAUTHORS/SHAKESPEARE/shakespeare-romeo-48.txt'],nb_subplots=5):
+def show_interp(files = ['./discrete_discrete/TEXTSBYAUTHORS/DICKENS/dickens-oliver-627.txt','./discrete_discrete/TEXTSBYAUTHORS/KANT/kant-critique-141.txt'],nb_subplots=5):
     from wordcloud import WordCloud
     interp = ot_interpolation(files)
     def color_func(word,font_size,position,orientation,font_path,random_state):
         return (255,255,255)
     
+    print("Calculating interpolations...",end="")
     for i,t in enumerate(np.linspace(0,1,nb_subplots)):
         ot_interp = interp([1-t,t])
         wc = WordCloud(width=300,height=500,color_func=color_func).generate_from_frequencies({ w : f for f,w in ot_interp })
         ax = plt.subplot(1,nb_subplots,i+1)
         ax.imshow(wc,interpolation='bilinear')
         ax.axis('off')
+    print(" Done.")
     plt.show()
 
