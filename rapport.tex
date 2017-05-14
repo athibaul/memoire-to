@@ -1,6 +1,6 @@
 \input{../utils.tex}
 
-\DeclareMathOperator{\diag}{\bold{diag}}
+\DeclareMathOperator{\diag}{\mathbf{diag}}
 
 \title{Transport optimal et régularisation}
 \author{Alexis THIBAULT}
@@ -16,7 +16,10 @@
 
 \subsection{Formulation du problème}
 La formulation initiale du problème de transport est due à Monge. Il est question de transporter une mesure de probabilité sur $\mu$ sur $\IR^d$ vers une autre $\nu$ par une application $T\,:\,\IR^d \rightarrow \IR^d$, de façon à ce que $\nu$ soit la mesure image de $\mu$ par $T$, en minimisant la quantité~:
-\[M(T) = \int_{\IR^d} |T(x)-x|\,d\mu(x)\]
+\begin{equation}
+\label{eq:monge}
+M(T) = \int_{\IR^d} |T(x)-x|\,d\mu(x)
+\end{equation}
 Il est possible de généraliser le problème en remplaçant $|T(x)-x|$ par un coût quelconque $c(T(x),x)$, ce qui permet de considérer que le problème n'est pas limité à $\IR^d$. On peut aussi décider que les espaces de départ et d'arrivée peuvent être différents.
 
 Cette première formulation a des défauts~: il n'existe pas toujours une application $T$ envoyant $\mu$ sur $\nu$. Un contre-exemple direct est celui où $\mu$ est une distribution de Dirac et où $\nu$ est une distribution non localisée en un point, l'image de $\mu$ par $T$ étant alors toujours $\delta(x-T(0))$. Ainsi, le problème de Monge sera inutile dans les cas discrets. Il se trouve qu'il est par ailleurs difficile à étudier.
@@ -24,7 +27,10 @@ Cette première formulation a des défauts~: il n'existe pas toujours une applic
 C'est pourquoi Kantorovich a introduit une autre formulation du problème, qui consiste à relâcher les contraintes sur la façon dont le transport s'effectue. Plutôt qu'une application, Kantorovich considère les \emph{plans de transport}~:
 \[\Pi(\mu,\nu) = \{\gamma\;\text{mesure de probabilité sur}\,X\times Y\;|\;(\pi_X)_\# \gamma = \mu,\; (\pi_Y)_\# \gamma = \nu\}\]
 où $(\pi_X)_\# \gamma$ dénote la mesure marginale de $\gamma$, c'est-à-dire la mesure image par projection sur $X$. \' Etant donnée une fonction de coût $c\, : \, X\times Y \rightarrow \IR\,\cup\,\{+\infty\}$ , la quantité que Kantorovich veut minimiser est alors~:
-\[K(\gamma) = \int_{X\times Y} c\,d\gamma \; ,\quad \text{où} \quad \gamma \in \Pi(\mu,\nu)\]
+\begin{equation}
+\label{eq:kantorovich}
+K(\gamma) = \int_{X\times Y} c\,d\gamma \; ,\quad \text{où} \quad \gamma \in \Pi(\mu,\nu)
+\end{equation}
 \begin{theoreme}[Existence d'un plan de transport optimal]
 On suppose que $X$ et $Y$ sont deux ensembles finis, chacun muni d'une loi de probabilité (respectivement $\mu$ et $\nu$). Le coût $c$ est supposé positif ou nul. Alors il existe un plan de transport $\gamma \in \Pi(\mu,\nu)$ qui minimise le coût de transport $K(\gamma)$.
 \end{theoreme}
@@ -34,16 +40,18 @@ On identifie $X$ à $\{1,\ldots,n\}$ et $Y$ à $\{1,\ldots,m\}$. Alors $\Pi(\mu,
 \end{proof}
 
 \subsection{Métrique de Wasserstein}
-On s'intéresse maintenant au coût de transport optimal~:
+On s'intéresse maintenant au coût minimal nécessaire au transport~:
 \[C(\mu,\nu) = \min_{\gamma \in \Pi(\mu,\nu)} K(\gamma) \]
 On peut considérer ce coût comme une sorte de distance entre $\mu$ et $\nu$. Quelques hypothèses supplémentaires sont cependant nécessaires pour pouvoir affirmer que ceci constitue bien une distance au sens mathématique. Il suffit par exemple que $X=Y$ et que le coût soit défini à partir d'une distance.
 
 \begin{definition}[Métrique de Wasserstein]
-Soit $(X,d)$ espace métrique, et $p \in \IR, p \ge 1$. On définit la \emph{distance de Wasserstein} d'ordre $p$ entre $\mu$ et $\nu$ comme~:
-\[\begin{split}
+Soit $(X,d)$ espace métrique, et $p \in \IR,\;p \ge 1$. On définit la \emph{distance de Wasserstein} d'ordre $p$ entre $\mu$ et $\nu$ comme le coût de transport optimal entre ces mesures, avec $c = d^p$~:
+\begin{equation}
+\label{eq:wasserstein}
+\begin{split}
 W_p(\mu,\nu) & = \left(\inf_{\gamma \in \Pi(\mu,\nu)} \int_{X\times X} d(x,y)^p\,d\gamma(x,y) \right) \\
 & = \inf_{\gamma \in \Pi(\mu,\nu)} \left[\mathbb{E}\,d(X,Y)^p \right]^\frac{1}{p}, \quad (X,Y) \leadsto \gamma
-\end{split}\]
+\end{split}\end{equation}
 \end{definition}
 
 \begin{proof}[Preuve que $W_p$ vérifie les axiomes d'une distance]
@@ -74,7 +82,8 @@ Si $X$ est complet et séparable, alors $P_p(X) = (P(X),W_p)$ est un espace mét
 \end{theoreme}
 De plus, l'injection de $X$ dans $P_p(X)$, qui à chaque point associe la mesure de Dirac unitaire en ce point est une isométrie.
 On visualise assez bien la preuve de la deuxième partie du théorème dans le cas particulier où $X = [0;1]^d$.
-\begin{proof}
+\begin{proof}[Démonstration dans le cas où X est un cube]
+On suppose $X = [0;1]^d$.
 Soit $\mu \in P([0;1]^d)$. Pour $n \in \IN$, on peut diviser le cube en $2^{nd}$ cubes $(C_{i_1,\ldots,i_d})_{0 \le i_1,\ldots,i_d < 2^n}$ de côté $2^{-n}$, et considérer la mesure constituée des pics de Dirac normalisés, pris au coin de chaque cube~:
 \[\nu_n = \sum_{0 \le i_1,\ldots,i_d < 2^n} \mu(C_{i_1,\ldots,i_d}) \delta_{a_{i_1,\ldots,i_d}} 
 \quad \text{où} \quad
@@ -94,27 +103,28 @@ Ainsi, $\nu_n \rightarrow_{n \rightarrow +\infty} \mu$.
 \subsection{Calcul numérique}
 Le problème de Kantorovich est un problème d'optimisation linéaire.
 Le calcul du transport optimal entre histogrammes de taille $n$ dans un espace métrique général prend une complexité $O(d^3 \log(d))$ par la méthode du simplexe.
-L'algorithme du simplexe est relativement compliqué, ne peut pas bénéficier de l'accélération physique d'un GPU, et il peut sembler plus intéressant d'avoir des résultats approchés pour un coût de calcul bien inférieur~: c'est pourquoi nous nous intéresserons à partir de maintenant au problème d'approximation du transport optimal.
+L'algorithme du simplexe est relativement compliqué, ne peut pas bénéficier de l'accélération physique d'un GPU, et il peut sembler plus intéressant d'avoir des résultats approchés pour un coût de calcul bien inférieur~: c'est pourquoi nous nous intéresserons à partir de maintenant à la question de l'\emph{approximation du transport optimal}.
 
 \section{Problème régularisé}
 Dans le but de calculer le transport optimal de façon plus efficace, une idée présentée dans \cite{cuturi13} consiste à se limiter aux solutions \og assez régulières \fg, en ajoutant un terme entropique dans l'expression du coût à minimiser. Cette méthode est en fait assez naturelle~: elle a simplement tendance à légèrement lisser les solutions. Le problème devient alors strictement convexe, ce qui permet d'assurer l'unicité de la solution, et le fait d'utiliser l'entropie assure que le plan de transport $\gamma$ a tous ses coefficients non nuls, ce qui simplifie le travail. En effet, la forme particulière du coût à régularisation entropique fait qu'il existe alors des algorithmes à convergence rapide vers la solution consistant en de simples produits matriciels --- et qui peuvent donc être implémentés efficacement sur GPU.
 
 \subsection{Formulation}
 On se limite dorénavant aux cas discrets. Le plan de transport s'écrit 
-\[
+\begin{equation}\label{eq:pi_discret}
 \Pi(\mu,\nu) = \left\{ \gamma \in \IR_+^{X \times Y} \quad\middle|\quad
 \forall i \in X,\,\sum_{j \in Y} \gamma_{i,j} = \mu_i \quad
  \text{et} \quad
-\forall j \in Y ,\,\sum_{i \in X} \gamma_{i,j} = \nu_j \right\} \]
+\forall j \in Y ,\,\sum_{i \in X} \gamma_{i,j} = \nu_j \right\}
+\end{equation}
 Le coût de transport selon la formulation de Kantorovich (non régularisé), était~:
 \[K(\gamma) = \sum_{i,j} c_{i,j} \gamma_{i,j} \]
 On définit maintenant le coût régularisé comme~:
-\[
+\begin{equation}\label{eq:keps}
 \begin{split}
 K^\epsilon (\gamma) 
  &= K(\gamma) + \epsilon S(\gamma) \\
 &= \sum_{i,j} c_{i,j} \gamma_{i,j} + \epsilon \sum_{i,j} \gamma_{i,j} \log(\gamma_{i,j}) 
-\end{split}\]
+\end{split}\end{equation}
 On appelle $S(\gamma)$ l'\emph{entropie} de $\gamma$, que l'on prolonge par continuité si certains coefficients de $\gamma$ sont nuls.
 
 Quitte à diminuer le nombre de points de $X$ ou de $Y$, on peut supposer que tous les coefficients $\mu_i$ et $\nu_j$ sont non nuls, auquel cas on a le lemme suivant.
@@ -193,7 +203,8 @@ On peut considérer que $K^\epsilon$ est défini sur tout $U = \IR_{+*}^{nm}$ pa
 En effet, pour tout $v \in \IR^{nm}$ assez petit vérifiant $\sum_i v_{i,j} = \sum_j v_{i,j} = 0$, et $\eta \in \IR$, $|\eta|$ assez petit, on a~:
 \[ \begin{split}
 K^\epsilon(\gamma^\epsilon + \eta v) &\ge K^\epsilon(\gamma^\epsilon) \\
-K^\epsilon(\gamma^\epsilon) + \eta \langle \nabla K^\epsilon(\gamma^\epsilon) , v \rangle  &\ge K^\epsilon(\gamma^\epsilon) \\
+K^\epsilon(\gamma^\epsilon) + \eta \langle \nabla K^\epsilon(\gamma^\epsilon) , v \rangle + o(\eta)  &\ge K^\epsilon(\gamma^\epsilon) \\
+K^\epsilon(\gamma^\epsilon) + \eta \langle \nabla K^\epsilon(\gamma^\epsilon) , v \rangle &\ge K^\epsilon(\gamma^\epsilon) \quad \text{pour $\eta$ assez petit} \\
 \langle \nabla K^\epsilon(\gamma^\epsilon) , v \rangle &= 0
 \end{split}\]
 Le gradient de $K^\epsilon$ en $\gamma^\epsilon$ est donc dans l'orthogonal du noyau de $B : \gamma \mapsto ((\sum_j \gamma_{i,j})_i, (\sum_i \gamma_{i,j})_j)$, c'est-à-dire dans l'image de l'application linéaire transposée $B^\transpose : ((p_i)_i,(q_j)_j) \mapsto (p_i+q_j)_{i,j}$.
@@ -215,22 +226,64 @@ La seconde inégalité de point-selle découle du fait que $\gamma^\epsilon$ min
 
 \begin{lemma}
 Pour tout $\epsilon > 0$, le minimiseur $\gamma^\epsilon$ de $K^\epsilon$ est de la forme~:
-\[
+\begin{equation}\label{eq:aGb}
 \gamma^\epsilon = \diag(a)\;G\,\diag(b)
-\]
+\end{equation}
 où $a$ et $b$ sont deux vecteurs, uniques à un facteur près, et $G = (e^{-c_{i,j}/\epsilon})$ est l'exponentielle de $-c/\epsilon$, coefficient par coefficient.
 \end{lemma}
 \begin{proof}
-
+Le Lagrangien admet un point-selle en $(\gamma^\epsilon,p^\epsilon,q^\epsilon)$, et il est dérivable en ce point (rappellons que $\gamma^\epsilon_{i,j}$ est à coefficients non nuls). Un point-selle étant notamment point critique, on sait que la différentielle du Lagrangien est nulle en ce point. Or la différentielle selon $\gamma_{i,j}$ s'écrit~:
+\[\begin{split}
+0 = \frac{\partial L}{\partial \gamma_{i,j}}
+&= c_{i,j} + \epsilon(1+\log \gamma_{i,j} ) + p_i + q_j \\
+\log \gamma_{i,j} &= \frac{-c_{i,j} - p_i - q_j}{\epsilon} -1\\
+\gamma_{i,j} &= e^{-1/2 - p_i / \epsilon} e^{-c_{i,j}/\epsilon} e^{-1/2 - q_j / \epsilon}
+\end{split}\]
+On en déduit l'existence de $a$ et $b$. L'unicité à une constante près vient du fait que l'on doit avoir \[\begin{split}
+\forall i,j,\quad
+a_i - c_{i,j}/\epsilon + b_j &= -1/2 - p_i/\epsilon - c_{i,j} / \epsilon - 1/2 - q_j/ \epsilon \\
+a_i + p_i/\epsilon &= -1 - b_j - q_j/\epsilon
+ \end{split}\]
+Chaque membre de l'égalité ne dépendant que d'une variable à la fois, on en déduit que la quantité est indépendante de $i$ et $j$~: $a + p/\epsilon = -1-b-q/\epsilon = t \in \IR$. Ce paramètre $t$ détermine alors $a$ et $b$ de façon unique.
 \end{proof}
 
+La difficulté du problème initial résidait dans le fait de trouver quelles contraintes sont actives (i.e. quels coefficients de $\gamma$ sont nuls). Pour le problème régularisé, aucune contrainte n'est active. Ceci semblait impliquer que de nombreux calculs étaient nécessaires pour déterminer les $n^2$ coefficients de $\gamma$. Seulement, comme nous venons de le montrer, la solution du problème a une forme particulière $\gamma^\epsilon = \diag(a)\;G\,\diag(b)$. Le calcul du plan optimal consistera donc à trouver les $2n$ coefficients de $a$ et $b$.
 
 \section{Algorithme de Sinkhorn}
 
 \subsection{Algorithme}
+L'algorithme permettant de calculer $a$ et $b$ est le suivant~:
+
+\begin{tabular}{|p{\textwidth}|}
+\hline \vspace{0pt}
+ \label{algorithme}
+\'Etant donnés ($(c_{i,j})$, $\epsilon$, $(\mu_i)_{1\le i \le n}$,$(\nu_j)_{1 \le j \le m}$), on pose~: \\
+$a^0 = (1/n, \ldots, 1/n)$\\
+$(G_{i,j}) = (e^{c_{i,j}})$\\
+Puis on itère (jusqu'à ce qu'un critère d'arrêt convenable soit vérifié)~: \\
+$\quad b^{k+1}_j = \nu_j / (G^\transpose a^k)_j$\\
+$\quad a^{k+1}_i = \mu_i /(G b^{k+1})_i$ \\
+\hline
+\end{tabular}
 
 \subsection{Convergence}
-\[\lim_{k \rightarrow +\infty} \gamma^k = \gamma_\epsilon\]
+\begin{lemma}[Convergence et correction de l'algorithme]
+\label{lemma:sink_cv}
+Si on note $\gamma^k = \diag(a^k)\;G\,\diag(b^k)$ les résultats des itérations de l'algorithme précédent, la suite $(\gamma^k)$ converge et~:
+\[\lim_{k \rightarrow +\infty} \gamma^k = \gamma^\epsilon\]
+\end{lemma}
+
+Afin de prouver ce résultat, on utilise un raisonnement préliminaire.
+On définit la \emph{divergence de Kullback-Leibler} par la formule~:
+\[
+KL(\gamma | \xi) = \sum_{i,j} \gamma_{i,j} \left(\log\left(\frac{\gamma_{i,j}}{\xi_{i,j}} \right) -1 \right)
+\]
+Alors le problème de minimisation (\ref{eq:keps}) se réécrit~:
+
+
+\begin{proof}[Démonstration du lemme \ref{lemma:sink_cv}]
+Voilà.
+\end{proof}
 
 \subsection{Calcul de barycentres}
 \[\min_{\mu} \min_{\gamma_1 \ldots \gamma_n} \sum_i \lambda_i C_\epsilon(\gamma_i) \quad (\gamma_i)^\transpose \mathbbm{1} = \nu_i\]
