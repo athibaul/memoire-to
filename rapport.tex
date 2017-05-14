@@ -275,11 +275,22 @@ Si on note $\gamma^k = \diag(a^k)\;G\,\diag(b^k)$ les résultats des itérations
 
 Afin de prouver ce résultat, on utilise un raisonnement préliminaire.
 On définit la \emph{divergence de Kullback-Leibler} par la formule~:
-\[
+\begin{equation}\label{eq:kl}
 KL(\gamma | \xi) = \sum_{i,j} \gamma_{i,j} \left(\log\left(\frac{\gamma_{i,j}}{\xi_{i,j}} \right) -1 \right)
-\]
-Alors le problème de minimisation (\ref{eq:keps}) se réécrit~:
+\end{equation}
 
+Alors le problème de minimisation (\ref{eq:keps}) se réécrit~:
+\[
+\gamma^\epsilon = \argmin_{\gamma \in \Pi(\mu,\nu)} KL(\gamma | G)
+\quad \text{où} \quad G = e^{-c/\epsilon}
+\]
+En effet, on a l'identité~:
+\[\forall \gamma \in \Pi(\mu,\nu), 
+\quad K^\epsilon(\gamma) 
+= \sum_{i,j} \gamma_{i,j} (c_{i,j} + \epsilon \log(\gamma_{i,j}))
+= \frac{KL(\gamma | G)}{\epsilon} \]
+
+Alors la 
 
 \begin{proof}[Démonstration du lemme \ref{lemma:sink_cv}]
 Voilà.
