@@ -1,6 +1,7 @@
 \input{../utils.tex}
 
 \DeclareMathOperator{\diag}{\mathbf{diag}}
+\DeclareMathOperator{\Ccal}{\mathcal{C}}
 
 \title{Transport optimal et régularisation}
 \author{Alexis THIBAULT}
@@ -267,21 +268,50 @@ $\quad a^{k+1}_i = \mu_i /(G b^{k+1})_i$ \\
 \end{tabular}
 
 \subsection{Convergence}
-\begin{lemma}[Convergence et correction de l'algorithme]
-\label{lemma:sink_cv}
+\begin{theoreme}[Convergence et correction de l'algorithme]
+\label{th:sink_cv}
 Si on note $\gamma^k = \diag(a^k)\;G\,\diag(b^k)$ les résultats des itérations de l'algorithme précédent, la suite $(\gamma^k)$ converge et~:
 \[\lim_{k \rightarrow +\infty} \gamma^k = \gamma^\epsilon\]
-\end{lemma}
+\end{theoreme}
 
 Afin de prouver ce résultat, on utilise un raisonnement préliminaire.
+\begin{definition}[Divergence de Kullback-Leibler]
 On définit la \emph{divergence de Kullback-Leibler} par la formule~:
 \begin{equation}\label{eq:kl}
 KL(\gamma | \xi) = \sum_{i,j} \gamma_{i,j} \left(\log\left(\frac{\gamma_{i,j}}{\xi_{i,j}} \right) -1 \right)
 \end{equation}
+\end{definition}
+On peut considérer la divergence comme une façon de mesurer la disparité de deux répartitions.
+\begin{definition}[Projection de Kullback-Leibler]
+ \'Etant donnés un convexe fermé $\Ccal$ et une répartition $\xi$, on définit la \emph{projection de Kullback-Leibler} de $\xi$ sur $\Ccal$ par~:
+\begin{equation}\label{eq:pkl}
+P^{KL}_{\Ccal} (\xi) = \argmin_{\gamma \in \Ccal} KL(\gamma | \xi)
+\end{equation}
+Ceci définit bien une unique valeur car $KL$ est une fonctionnelle strictement convexe.
+\end{definition}
 
-Alors le problème de minimisation (\ref{eq:keps}) se réécrit~:
+On considère $\Ccal_1, \ldots, \Ccal_l$ une famille de convexes. On prend $\xi_0$ quelconque, et on construit la suite $(\xi_i)$ par récurrence de la façon suivante~:
 \[
-\gamma^\epsilon = \argmin_{\gamma \in \Pi(\mu,\nu)} KL(\gamma | G)
+\xi_{i+1} = P^{KL}_{\Ccal_{i+1}}(\xi_i)
+\]
+où les indices sont à comprendre modulo $l$. On note par la suite $P_i \xi = P^{KL}_{\Ccal_i} (\xi)$. On s'intéresse à la convergence de cette suite.
+\begin{lemma}
+Pour $\zeta \in \Ccal_i$ et $\rho$ quelconque, on a l'inégalité~:
+\[
+KL(P_i \rho | \rho ) \le KL(\zeta | \rho) - KL(\zeta | P_i \rho)
+\]
+\end{lemma}
+\begin{proof}
+
+\end{proof}
+
+
+
+On peut maintenant démontrer la convergence et la correction de l'algorithme.
+\begin{proof}[Démonstration du théorème \ref{th:sink_cv}]
+À l'aide de la divergence de Kullback-Leibler, le problème de minimisation (\ref{eq:keps}) se réécrit~:
+\[
+\gamma^\epsilon = P^{KL}_{\Pi(\mu,\nu)} (G)
 \quad \text{où} \quad G = e^{-c/\epsilon}
 \]
 En effet, on a l'identité~:
@@ -290,10 +320,14 @@ En effet, on a l'identité~:
 = \sum_{i,j} \gamma_{i,j} (c_{i,j} + \epsilon \log(\gamma_{i,j}))
 = \frac{KL(\gamma | G)}{\epsilon} \]
 
-Alors la 
-
-\begin{proof}[Démonstration du lemme \ref{lemma:sink_cv}]
-Voilà.
+Notons $\Ccal_1$ et $\Ccal_2$ les ensembles~:
+\[
+\Ccal_1 = \left\{ \gamma \in \IR_{+*}^{nm} \mid \sum_j \gamma_{i,j} = \mu_i \right\}
+; \quad
+\Ccal_2 = \left\{ \gamma \in \IR_{+*}^{nm} \mid \sum_i \gamma_{i,j} = \nu_j \right\}
+\]
+On a notamment $\Pi(\mu,\nu) = \Ccal_1 \cap \Ccal_2$.
+Le minimiseur $\gamma^\epsilon$ est donc le projeté de $G$ sur $\Ccal_1 \cap \Ccal_2$ selon la divergence de Kullback-Leibler.
 \end{proof}
 
 \subsection{Calcul de barycentres}
