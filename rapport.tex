@@ -189,7 +189,7 @@ Soit $L : A \times B \rightarrow \IR$. On appelle \emph{point-selle} de $L$ un c
 \[ \forall (a,b) \in A\times B, \quad L(a_0,b) \le L(a_0,b_0) \le L(a,b_0) \]
 \end{definition}
 
-\begin{lemma}
+\begin{lemma}\label{lemma:pt_selle}
 Le Lagrangien associé à $K^\epsilon$~:
 \[
 L(\gamma, p, q) = K^\epsilon(\gamma) +
@@ -287,47 +287,64 @@ On peut considérer la divergence comme une façon de mesurer la disparité de d
 \begin{equation}\label{eq:pkl}
 P^{KL}_{\Ccal} (\xi) = \argmin_{\gamma \in \Ccal} KL(\gamma | \xi)
 \end{equation}
-Ceci définit bien une unique valeur car $KL$ est une fonctionnelle strictement convexe.
+Ceci définit bien une unique valeur car $KL(\cdot | \xi)$ est une fonctionnelle strictement convexe.
 \end{definition}
 
-On considère $\Ccal_1, \ldots, \Ccal_l$ une famille de convexes. On prend $\xi_0$ quelconque, et on construit la suite $(\xi_i)$ par récurrence de la façon suivante~:
+
+\begin{lemma}\label{lemma:bregman}
+Soit $\Ccal_1, \ldots, \Ccal_l$ une famille de sous-espaces affines de l'espace $\IR_{+*}^{nm}$, et $\Ccal = \bigcap_i \Ccal_i$ leur intersection. On prend $\xi_0 \in \IR_{+*}^{nm}$ quelconque, et on construit la suite $(\xi_i)$ par récurrence de la façon suivante (où les indices sont à comprendre modulo $l$)~:
 \[
 \xi_{i+1} = P^{KL}_{\Ccal_{i+1}}(\xi_i)
 \]
-où les indices sont à comprendre modulo $l$. On note par la suite $P_i \xi = P^{KL}_{\Ccal_i} (\xi)$. On s'intéresse à la convergence de cette suite.
-\begin{lemma}
-Pour $\zeta \in \Ccal_i$ et $\rho$ quelconque, on a l'inégalité~:
-\[
-KL(P_i \rho | \rho ) \le KL(\zeta | \rho) - KL(\zeta | P_i \rho)
-\]
+Alors la suite $(\xi_i)$ converge vers $P^{KL}_{\Ccal} (\xi_0)$. 
 \end{lemma}
-\begin{proof}
-
-\end{proof}
-
-
-
-On peut maintenant démontrer la convergence et la correction de l'algorithme.
-\begin{proof}[Démonstration du théorème \ref{th:sink_cv}]
-À l'aide de la divergence de Kullback-Leibler, le problème de minimisation (\ref{eq:keps}) se réécrit~:
+Ce résultat est démontré dans \cite{bregman66}. Un dernier résultat intermédiaire est nécessaire afin de pouvoir conclure. On observe qu'à l'aide de la divergence de Kullback-Leibler, le problème de minimisation (\ref{eq:keps}) se réécrit~:
 \[
 \gamma^\epsilon = P^{KL}_{\Pi(\mu,\nu)} (G)
 \quad \text{où} \quad G = e^{-c/\epsilon}
 \]
 En effet, on a l'identité~:
-\[\forall \gamma \in \Pi(\mu,\nu), 
+\[
+\forall \gamma \in \Pi(\mu,\nu), 
 \quad K^\epsilon(\gamma) 
 = \sum_{i,j} \gamma_{i,j} (c_{i,j} + \epsilon \log(\gamma_{i,j}))
-= \frac{KL(\gamma | G)}{\epsilon} \]
-
+= \frac{KL(\gamma | G)}{\epsilon} 
+\]
 Notons $\Ccal_1$ et $\Ccal_2$ les ensembles~:
 \[
-\Ccal_1 = \left\{ \gamma \in \IR_{+*}^{nm} \mid \sum_j \gamma_{i,j} = \mu_i \right\}
+\Ccal_1 = \left\{ \gamma \in \IR_{+*}^{nm} \;\middle|\; \sum_j \gamma_{i,j} = \mu_i \right\}
 ; \quad
-\Ccal_2 = \left\{ \gamma \in \IR_{+*}^{nm} \mid \sum_i \gamma_{i,j} = \nu_j \right\}
+\Ccal_2 = \left\{ \gamma \in \IR_{+*}^{nm} \;\middle|\; \sum_i \gamma_{i,j} = \nu_j \right\}
 \]
 On a notamment $\Pi(\mu,\nu) = \Ccal_1 \cap \Ccal_2$.
-Le minimiseur $\gamma^\epsilon$ est donc le projeté de $G$ sur $\Ccal_1 \cap \Ccal_2$ selon la divergence de Kullback-Leibler.
+\begin{lemma}\label{lemma:pkl_c1c2}
+Pour $\gamma \in \IR_{+*}^{nm}$, on a~:
+\begin{equation}
+P^{KL}_{\Ccal_1} (\gamma) = \diag \left(\frac{\mu}{\gamma \mathbbm{1}} \right) \gamma
+\quad et \quad
+P^{KL}_{\Ccal_2} (\gamma) = \gamma \diag \left(\frac{\nu}{\gamma^\transpose \mathbbm{1}} \right)
+\end{equation}
+Autrement dit, la projection normalise les lignes (respectivement les colonnes) de $\gamma$ afin que le résultat ait la marginale souhaitée.
+\end{lemma}
+\begin{proof}
+Prenons $\gamma \in \IR^{nm}$, et posons $F(\zeta) = KL(\zeta | \gamma)$. Pour $\zeta^* = P^{KL}_{\Ccal_1} (\gamma)$, du fait que $\zeta^*$ minimise $F$ sur $\Ccal_1$ on doit avoir $\nabla F (\zeta^*) \in (\Ccal_1)^\transpose$ (par un raisonnement similaire au lemme \ref{lemma:pt_selle}). Ceci signifie que $(\nabla F (\zeta^*))_{i,j}$ ne dépend pas de $j$. On appelle cette quantité $\lambda_i$. Or le calcul donne~:
+\[
+\left(\nabla F (\zeta^*)\right) _{i,j} = \log \left(\frac{\zeta^*_{i,j}}{\gamma_{i,j}} \right) = \lambda_i
+\]
+On en déduit que $\zeta^*_{i,j} = \gamma_{i,j} e^{\lambda_i}$. Enfin, comme il faut que $\sum_{j} \zeta^*_{i,j} = \mu_i$, on trouve~:
+\[\begin{split}
+e^{\lambda_i} \sum_j \gamma_{i,j} &= \mu_i \\
+e^{\lambda_i} &= \frac{\mu_i}{\sum_{j} \gamma_{i,j}} \\
+\zeta_{i,j} &= \gamma_{i,j} \frac{\mu_i}{\sum_{j'} \gamma_{i,j'}}
+\end{split}\]
+D'où le résultat.
+\end{proof}
+On peut maintenant démontrer la convergence et la correction de l'algorithme.
+\begin{proof}[Démonstration du théorème \ref{th:sink_cv}]
+Le minimiseur $\gamma^\epsilon$ est donc le projeté de $G$ sur $\Ccal_1 \cap \Ccal_2$ selon la divergence de Kullback-Leibler. L'algorithme consiste à construire la suite des projections alternativement sur $\Ccal_1$ et $\Ccal_2$, comme dans le lemme \ref{lemma:bregman}~:
+\[\gamma^{2k} = a^k G b^k,\quad \gamma^{2k+1} = a^k G b^{k+1}\]
+D'après le lemme \ref{lemma:pkl_c1c2}, il s'agit bien des projections sur les sous-espaces affines $\Ccal_1$ et $\Ccal_2$.
+ Ainsi, la suite des itérés converge vers $P^{KL}_{\Pi(\mu,\nu)}(G) = \gamma^\epsilon$.
 \end{proof}
 
 \subsection{Calcul de barycentres}
@@ -351,6 +368,11 @@ Le minimiseur $\gamma^\epsilon$ est donc le projeté de $G$ sur $\Ccal_1 \cap \C
 Villani, Cédric. \textit{Optimal transport: old and new.} Vol. 338. Springer Science \& Business Media, 2008.
 \bibitem{cuturi13}
 Cuturi, Marco. ``Sinkhorn distances: Lightspeed computation of optimal transport.'' \textit{Advances in Neural Information Processing Systems.} 2013.
+\bibitem{bregman66}
+L. M. Bregman. The relaxation method of finding the common point of
+convex sets and its application to the solution of problems in convex programming.
+\textit{USSR computational mathematics and mathematical physics},
+7(3):200–217, 1967.
 \end{thebibliography}
 
 \end{document}

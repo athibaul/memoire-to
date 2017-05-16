@@ -1,0 +1,23 @@
+
+\begin{lemma} \label{lemma:kl_ineq}
+Pour $\zeta \in \Ccal_i$ et $\rho$ quelconque, on a l'inégalité~:
+\[
+KL(P_i \rho | \rho ) \le KL(\zeta | \rho) - KL(\zeta | P_i \rho)
+\]
+\end{lemma}
+\begin{proof}
+On remarque d'abord que $\zeta \mapsto KL(\zeta | \rho) - KL(\zeta | \rho')$ est linéaire en $\zeta$.
+On en déduit que pour $t \in ]0;1]$, en notant $\zeta_t = t \zeta + (1-t) P_i \rho$,
+\[\begin{split}
+KL(\zeta_t | \rho) - KL(\zeta_t | P_i \rho) &= t (KL(\zeta | \rho) - KL(\zeta | P_i \rho)) + (1-t) KL(P_i \rho | \rho) \\
+KL(\zeta | \rho) - KL(\zeta | P_i \rho) - KL(P_i \rho | \rho) &= \frac{KL(\zeta_t | \rho) - KL(P_i \rho | \rho)}{t} - \frac{KL(\zeta_t | P_i \rho) }{t}
+\end{split}\]
+Par définition de $P_i \rho$, le premier terme du membre de droite est positif. Pour $t \rightarrow 0$ le second terme tend vers la dérivée en $t=0$ de $t \mapsto KL(\zeta_t | P_i \rho)$. Celle-ci est nulle car
+\[\begin{split}
+\frac{\partial KL(\gamma | \xi)}{\partial \gamma}(d\gamma) &= \sum_{i,j} \log \left(\frac{\gamma_{i,j}}{\xi_{i,j}} \right) d\gamma_{i,j} \\
+\partial_1 KL(P_i \rho | P_i \rho) = 0
+\end{split}\]
+\end{proof}
+
+\begin{lemma}
+\end{lemma}
