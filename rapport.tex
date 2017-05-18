@@ -1,4 +1,5 @@
 \input{../utils.tex}
+\usepackage{subcaption}
 
 \DeclareMathOperator{\diag}{\mathbf{diag}}
 \DeclareMathOperator{\Ccal}{\mathcal{C}}
@@ -320,9 +321,9 @@ On a notamment $\Pi(\mu,\nu) = \Ccal_1 \cap \Ccal_2$.
 \begin{lemma}\label{lemma:pkl_c1c2}
 Pour $\gamma \in \IR_{+*}^{nm}$, on a~:
 \begin{equation}
-P^{KL}_{\Ccal_1} (\gamma) = \diag \left(\frac{\mu}{\gamma \mathbbm{1}} \right) \gamma
+P^{KL}_{\Ccal_1} (\gamma) = \diag \left(\frac{\mu}{\gamma \One} \right) \gamma
 \quad et \quad
-P^{KL}_{\Ccal_2} (\gamma) = \gamma \diag \left(\frac{\nu}{\gamma^\transpose \mathbbm{1}} \right)
+P^{KL}_{\Ccal_2} (\gamma) = \gamma \diag \left(\frac{\nu}{\gamma^\transpose \One} \right)
 \end{equation}
 Autrement dit, la projection normalise les lignes (respectivement les colonnes) de $\gamma$ afin que le résultat ait la marginale souhaitée.
 \end{lemma}
@@ -341,20 +342,68 @@ D'où le résultat.
 \end{proof}
 On peut maintenant démontrer la convergence et la correction de l'algorithme.
 \begin{proof}[Démonstration du théorème \ref{th:sink_cv}]
-Le minimiseur $\gamma^\epsilon$ est donc le projeté de $G$ sur $\Ccal_1 \cap \Ccal_2$ selon la divergence de Kullback-Leibler. L'algorithme consiste à construire la suite des projections alternativement sur $\Ccal_1$ et $\Ccal_2$, comme dans le lemme \ref{lemma:bregman}~:
+Le minimiseur $\gamma^\epsilon$ est le projeté de $G$ sur $\Ccal_1 \cap \Ccal_2$ selon la divergence de Kullback-Leibler. L'algorithme consiste à construire la suite des projections alternativement sur $\Ccal_1$ et $\Ccal_2$, comme dans le lemme \ref{lemma:bregman}~:
 \[\gamma^{2k} = a^k G b^k,\quad \gamma^{2k+1} = a^k G b^{k+1}\]
 D'après le lemme \ref{lemma:pkl_c1c2}, il s'agit bien des projections sur les sous-espaces affines $\Ccal_1$ et $\Ccal_2$.
- Ainsi, la suite des itérés converge vers $P^{KL}_{\Pi(\mu,\nu)}(G) = \gamma^\epsilon$.
+ Ainsi, la suite des itérés converge vers $P^{KL}_{\Pi(\mu,\nu)}(G) = \gamma^\epsilon$. Ceci prouve la convergence de l'algorithme, et que la limite est correcte.
 \end{proof}
 
 \subsection{Calcul de barycentres}
-\[\min_{\mu} \min_{\gamma_1 \ldots \gamma_n} \sum_i \lambda_i C_\epsilon(\gamma_i) \quad (\gamma_i)^\transpose \mathbbm{1} = \nu_i\]
+Un problème plus général que l'on peut se poser est celui de l'interpolation de mesures. On aimerait, étant données $(\nu^1, \ldots, \nu^s)$ famille de mesures, et $(\lambda_1, \ldots, \lambda_s)$ famille de coefficients de pondération positifs de somme 1, trouver un \og barycentre \fg $\,\mu$ interpolant les $\nu^i$ de façon convenable relativement à la métrique de Wasserstein.
+
+\begin{definition}[Barycentre de transport optimal]
+Soit $\epsilon > 0$. Soient $\nu^1, \ldots, \nu^s \in (\IR^{n})^s$ et $\lambda_1, \ldots, \lambda_s \in (\IR_+)^s$ tels que $\sum_k \lambda_k = 1$. On définit le barycentre de transport optimal de $(\nu^k)$ pondéré par $(\lambda_k)$ par~:
+\[
+\mu = \argmin_{\IR_{+}^{n}} \min_{(\gamma_1 \ldots \gamma_s) \in \Pi_\mu} \sum_k \lambda_k K^\epsilon(\gamma^k) 
+\quad \text{où} \quad
+\Pi_\mu = \Pi(\mu,\nu_1) \times \ldots \times \Pi(\mu,\nu_s)
+\]
+\end{definition}
+Autrement dit, $\mu$ est la répartition qui minimise la moyenne pondérée des coûts de transport optimal vers $\nu$~:
+\[ \mu = \argmin \sum_k \lambda_k W_p(\mu,\nu^k) \]
+
 
 \section{Exemples et applications}
 
 \subsection{Sinkhorn unidimensionnel}
--> Convergence linéaire
--> Image de gamma, variation selon epsilon
+Un premier exemple sur lequel on voit apparaître comment se comporte la régularisation entropique est celui de mesures à une dimension. On veut par exemple connaître le plan optimal pour des sommes de deux répartitions gaussiennes, pour un coût quadratique en la distance euclidienne.
+
+Le premier élément que l'on observe est la convergence de l'algorithme. Un résultat supplémentaire sur cet algorithme est qu'il converge \emph{linéairement}. L'erreur $|| (\gamma^k)^\transpose \One - \nu ||$ tend donc vers zéro de manière géométrique (jusqu'à ce qu'on arrive aux limites de précision numérique). De plus cette convergence est de plus en plus lente si on diminue $\epsilon$, comme illustré figure \ref{fig:1d_cv}.
+
+Les plans de transport obtenus (figure \ref{fig:1d_maps}) montrent les effets attendus de la régularisation entropique~: on obtient des objets plus lisses, et d'autant plus lisses que $\epsilon$ est grand. Pour $\epsilon$ très grand, le plan de transport tend vers l'extrémum de l'entropie sur $\Pi(\mu,\nu)$, c'est-à-dire le produit tensoriel $\gamma_{i,j} = \mu_i \nu_j$. C'est effectivement ce que l'on observe pour $\epsilon=10$. À l'opposé, plus $\epsilon$ est petit, plus la mesure a tendance à devenir concentrée.
+
+\begin{figure}
+\centering
+\includegraphics[width=10cm]{1d_err.png}
+\caption{Diminution de l'erreur au fil des itérations de Sinkhorn, pour différentes valeurs de $\epsilon$}
+\label{fig:1d_cv}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{5cm}
+\includegraphics[width=5cm]{1d_interp_0_1.png}
+\caption{$\epsilon=10$}
+\end{subfigure}
+%
+\begin{subfigure}[b]{5cm}
+\includegraphics[width=5cm]{1d_interp_0_5.png}
+\caption{$\epsilon=2$}
+\end{subfigure}
+%
+\begin{subfigure}[b]{5cm}
+\includegraphics[width=5cm]{1d_interp_2.png}
+\caption{$\epsilon=0.5$}
+\end{subfigure}
+%
+\begin{subfigure}[b]{5cm}
+\includegraphics[width=5cm]{1d_interp_18.png}
+\caption{$\epsilon=0.05$}
+\end{subfigure}
+%
+\caption{Plans de transports pour différentes valeurs de $\epsilon$}
+\label{fig:1d_maps}
+\end{figure}
 
 \subsection{Applications du calcul de barycentre}
 
@@ -363,6 +412,7 @@ D'après le lemme \ref{lemma:pkl_c1c2}, il s'agit bien des projections sur les s
 \subsection{Interpolations de nuages de mots}
 
 
+\medskip
 \begin{thebibliography}{99}
 \bibitem{villani08}
 Villani, Cédric. \textit{Optimal transport: old and new.} Vol. 338. Springer Science \& Business Media, 2008.

@@ -13,7 +13,7 @@ M : matrice d*d des distances
 lambda : quand lambda -> +infini, la valeur approche
 celle du transport optimal non régularisé
 """
-def ot_sinkhorn(M,r,c,lbd=10,epsilon=1e-3,iter_bound=500):
+def ot_sinkhorn_map_error(M,r,c,lbd=10,epsilon=1e-3,iter_bound=500):
     lbd /= len(r)
     initial_size = (len(r),len(c))
     I = (r>0)
@@ -32,8 +32,8 @@ def ot_sinkhorn(M,r,c,lbd=10,epsilon=1e-3,iter_bound=500):
         v = np.divide(c,np.transpose(K).dot(u))
         u = np.divide(r,K.dot(v))
         norm = norme(u-prev_u)
-        #err_r.append(norme(u * K.dot(v) - r))
-        #err_c.append(norme(v * np.transpose(K).dot(u) - c))
+        # err_r.append(norme(K.dot(u) - r))
+        err_r.append(norme(v * np.transpose(K).dot(u) - c))
         #print(u)
     if count>=iter_bound:
         print("Itercount exceeded")
@@ -44,8 +44,12 @@ def ot_sinkhorn(M,r,c,lbd=10,epsilon=1e-3,iter_bound=500):
     #v = np.divide(c,np.transpose(K).dot(u))
     P = np.zeros(initial_size)
     P[I,:] = np.diag(u).dot(K).dot(np.diag(v))
-    return P
+    return P,err_r
     # return np.sum(np.multiply(u,np.multiply(K,M).dot(v)))
+
+def ot_sinkhorn(*args):
+    P,err = ot_sinkhorn_map_error(*args)
+    return P
 
 def ot_sinkhorn_value(M,*args):
     P = ot_sinkhorn(M,*args)
@@ -92,7 +96,7 @@ def show_transport(n,lbd=1):
     t = np.arange(n)
     r0 = normalize(Gaussian(t,n*0.1,n/20)*0.5+Gaussian(t,n*0.5,n/10)+0.02)
     r1 = normalize(0.5*Gaussian(t,n*0.8,n/20)+Gaussian(t,n*0.5,n/30)+0.02)
-    P = ot_sinkhorn(distances(len(r0),p=2),r0,r1,lbd=lbd,epsilon=1e-3,iter_bound=10000)
+    P = ot_sinkhorn(distances(len(r0),p=2),r0,r1,lbd,1e-3,10000)
     ax = plt.subplot2grid((3,3),(1,1),rowspan=2,colspan=2)
     ax.imshow(np.log(P+1e-5),interpolation='bicubic')
     ax.set_aspect('auto')
@@ -110,4 +114,20 @@ def show_transport(n,lbd=1):
     ax.get_yaxis().set_ticks([])
     plt.show()
 
-show_transport(200,0.5)
+def show_error(n=200,lbds=[0.1,0.5,1,5,10,1/.06]):
+    t = np.arange(n)
+    r0 = normalize(Gaussian(t,n*0.1,n/20)*0.5+Gaussian(t,n*0.5,n/10)+0.02)
+    r1 = normalize(0.5*Gaussian(t,n*0.8,n/20)+Gaussian(t,n*0.5,n/30)+0.02)
+    ax = plt.axes()
+    for lbd in lbds:
+        P,err_r = ot_sinkhorn_map_error(distances(len(r0),p=2),r0,r1,lbd=lbd,epsilon=-1,iter_bound=5000)
+        lbl = "eps = %.2f" % (1/lbd)
+        ax.semilogy(err_r,label=lbl)
+    ax.legend()
+    ax.set_xlabel("itération")
+    ax.set_ylabel("erreur")
+    plt.show()
+
+
+#show_transport(200,10)
+show_error()
