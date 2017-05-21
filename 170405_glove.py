@@ -91,7 +91,7 @@ def test_interpolation(word1='video',word2='advertisement'):
 
 
 
-def ot_interpolation(files=['./discrete_discrete/TEXTSBYAUTHORS/NAPOLEON/pg3567.txt','./discrete_discrete/TEXTSBYAUTHORS/SHAKESPEARE/shakespeare-romeo-48.txt'], iterations=100, wordcount=1000):
+def ot_interpolation(files=['./discrete_discrete/TEXTSBYAUTHORS/NAPOLEON/pg3567.txt','./discrete_discrete/TEXTSBYAUTHORS/SHAKESPEARE/shakespeare-romeo-48.txt'], iterations=100, wordcount=3000):
     
     # Build the set of all words found in the books, 
     # and the histogram of each book
