@@ -152,8 +152,57 @@ def test4():
     plot_interpol(rep1,rep2,number_of_subplots=10)
     
 def test5():
-    n = 100
+    n = 150
     xx = np.arange(n+1); yy = np.arange(n+1)
     rep1 = circle(xx,yy,n/2,n/2,2*n/5) - circle(xx,yy,n/2,n/2,n/5)
     rep2 = [[ (y<n/5 or abs(x-n/2)<n/10) for x in range(n+1)] for y in range(n+1)]
     plot_interpol(rep1,rep2,gamma=0.04**2)
+
+def make_color_image(img,alpha,beta):
+    m = np.min(img)
+    M = np.max(img)
+    gamma = 1-alpha-beta
+    q = (img-m)/(M-m)
+    n = np.size(q,0)
+    q_color = np.zeros((n,n,3))
+    q_color[:,:,0] = 1 - (1-alpha) * q
+    q_color[:,:,1] = 1 - (1-beta) * q
+    q_color[:,:,2] = 1 - (1-gamma) * q
+    return q_color
+    
+
+def plot_interpol3(rep1,rep2,rep3,subs=4,gamma=0.04**2):
+    import matplotlib.gridspec as grsp
+    n = len(rep1)
+    rep1 = normalize(rep1); rep2 = normalize(rep2); rep3 = normalize(rep3)
+    P = np.zeros((n,n,3))
+    P[:,:,0] = rep1; P[:,:,1] = rep2; P[:,:,2] = rep3
+    gs = grsp.GridSpec(2*subs,subs)
+    total = subs*(subs+1)/2
+    count = 0
+    for i in range(subs):
+        for j in range(subs-i):
+            count+=1
+            print("Computing subplot %d/%d" % (count, total))
+            alpha = i / (subs-1)
+            beta = j / (subs-1)
+            lbd = np.array([alpha, beta, 1-alpha-beta])
+            q = barycenter(P,lbd,gamma=gamma)
+            ax = plt.subplot(gs[i+2*j:i+2*(j+1), i])
+            ax.get_xaxis().set_ticks([])
+            ax.get_yaxis().set_ticks([])
+            q_color = make_color_image(q,alpha,beta)
+            ax.imshow(q_color)
+    plt.show()
+
+def test6():
+    n = 50
+    xx = np.arange(n+1); yy = np.arange(n+1)
+    rep1 = circle(xx,yy,n/2,n/2,2*n/5) - circle(xx,yy,n/2,n/2,n/5)
+    rep2 = [[ (y<n/5 or abs(x-n/2)<n/10) for x in range(n+1)] for y in range(n+1)]
+    def f1(x,y):
+        return np.logical_or(y<n/5, np.logical_or(y>4*n/5, abs(x-y) < n/5))
+    rep3 = np.fromfunction(f1,(n+1,n+1))
+    
+    plot_interpol3(rep1,rep2,rep3,subs=5,gamma=0.045**2)
+    
