@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.signal import convolve2d
 import matplotlib.pyplot as plt
+from scipy.ndimage.filters import gaussian_filter
 
 
 def norme(v):
@@ -24,8 +25,18 @@ def barycenter(P,lbd=None,gamma=0.1**2,iterations=100):
     n = 2*(N//2)+1 # width of the convolution kernel
     t = np.linspace(-n/(2*N),n/(2*N),n)
     g = normalize(np.exp(-t**2 / gamma)); g2 =  np.outer(g,g)
+    #def xi(x):
+    #    return convolve2d(x,g2,'same')+1e-19
+    xi_div = 2
+    sqrt_gamma = np.sqrt(gamma/xi_div)*N
     def xi(x):
-        return convolve2d(x,g2,'same')+1e-19
+        xi = np.copy(x)
+        zeta = np.zeros_like(xi)
+        for _ in range(xi_div):
+            gaussian_filter(xi,sqrt_gamma,mode='constant',cval=0,truncate=20.0,output=zeta)
+            xi[:] = zeta[:]
+        #xi += 1e-19
+        return xi
 
     if lbd is None:
         lbd = np.ones(K)/K
@@ -139,3 +150,10 @@ def test4():
     rep1 = np.fromfunction(f1,(n+1,n+1))
     rep2 = circle(xx,yy,n/2,n/2,2*n/5)
     plot_interpol(rep1,rep2,number_of_subplots=10)
+    
+def test5():
+    n = 100
+    xx = np.arange(n+1); yy = np.arange(n+1)
+    rep1 = circle(xx,yy,n/2,n/2,2*n/5) - circle(xx,yy,n/2,n/2,n/5)
+    rep2 = [[ (y<n/5 or abs(x-n/2)<n/10) for x in range(n+1)] for y in range(n+1)]
+    plot_interpol(rep1,rep2,gamma=0.04**2)

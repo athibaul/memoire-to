@@ -411,7 +411,14 @@ Les plans de transport obtenus (figure \ref{fig:1d_maps}) montrent les effets at
 Parmi les nombreuses applications du transport optimal, celles que nous avons choisi de mettre en \oe uvre dans le cadre de ce mémoire sont liées au calcul de barycentre. Il est question d'interpolation de formes, où on s'intéresse au fait de trouver des barycentres entre des parties de $[0;1]^2$ ; et d'interpolation de nuages de mots, où on se sert d'un \emph{word embedding} pour trouver des histogrammes intermédiaires prenant en compte la sémantique.
 
 \subsubsection{Interpolation de formes}
-[TODO]
+Une utilisation assez basique du transport optimal est l'application à l'interpolation de formes géométriques. Afin de se placer dans le cadre numérique adapté, on identifie des images bidimensionnelles à des répartitions discrètes. On utilise ensuite l'algorithme de Sinkhorn pour calculer les barycentres de ces répartitions. Le résultat est illustré figure \ref{fig:2d_interp}
+
+\begin{figure}
+\centering
+\includegraphics[width=10cm]{2d_interp.png}
+\caption{Interpolation de formes géométriques par transport optimal}
+\label{fig:2d_interp}
+\end{figure}
 
 \subsubsection{Interpolations de nuages de mots}
 [TODO]

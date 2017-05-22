@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.signal import convolve2d
+from scipy.signal import convolve
 import matplotlib.pyplot as plt
 
 
@@ -139,3 +139,10 @@ def test4():
     rep1 = np.fromfunction(f1,(n+1,n+1))
     rep2 = circle(xx,yy,n/2,n/2,2*n/5)
     plot_interpol(rep1,rep2,number_of_subplots=10)
+    
+def test5():
+    n = 50
+    xx = np.arange(n+1); yy = np.arange(n+1)
+    rep1 = circle(xx,yy,n/2,n/2,2*n/5) - circle(xx,yy,n/2,n/2,n/5)
+    rep2 = [[ (y<n/5 or abs(x-n/2)<n/10) for y in range(n+1)] for x in range(n+1)]
+    plot_interpol(rep1,rep2,gamma=0.05**2)
