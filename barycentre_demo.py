@@ -151,14 +151,29 @@ def letter_n(n):
     nm = n/10; nM=9*n/10
     return [[ (nm<y<3*nm and nm<x<nM) or (abs(x-y)<2*nm and nm<x<nM and nm<y<nM) or (nM-2*nm<y<nM and nm<x<nM) for y in range(n+1)] for x in range(n+1)]
 
-shapes = [('Un disque','d',one_circle),('Trois disques','ddd',three_circles),('La lettre O','O',letter_o),('La lettre T','T',letter_t),('La lettre N','N',letter_n)]
+def square(n):
+    nm = n/10; nM=9*n/10
+    return [[ (nm<x<nM and nm<y<nM) for y in range(n+1)] for x in range(n+1)]
+
+def empty_square(n):
+    nm = n/10; nM=9*n/10
+    a = 3*nm; b = n-3*nm
+    return [[ (nm<x<nM and nm<y<nM) and not (a<x<b and a<y<b) for y in range(n+1)] for x in range(n+1)]
+
+def heart(n):
+    xx = np.linspace(-1.2,1.2,n+1)
+    yy = np.linspace(1.4,-1,n+1)
+    xx,yy = np.meshgrid(xx,yy)
+    return 1.0*(xx**2 + (5*yy/4 - np.sqrt(np.abs(xx)))**2 <= 1)
+
+shapes = [('Un disque','d',one_circle),('Trois disques','ddd',three_circles),('Un carré plein','c',square),('Un carré vide','cv',empty_square),('Un coeur','h',heart),('La lettre O','O',letter_o),('La lettre T','T',letter_t),('La lettre N','N',letter_n)]
 
 ## Partie interactive
 
 import sys
 
 print("""Ceci est un fichier de démonstration du calcul de barycentres par l'algorithme de Sinkhorn. Il permet d'afficher l'interpolation de différentes formes.""")
-print("Les formes disponibles sont :")
+print("\n\nLes formes disponibles sont :\n")
 format = "{:>15}{:>15}"
 print(format.format("Forme","Code"))
 print("-"*30)
