@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import operator
 import random
 import numpy.linalg
+import time
 
 def parse_files(glove='glove.txt',dict_txt='dict.txt'):
     global P, dic, rev_dic
@@ -43,7 +44,7 @@ def build_histogram(file=None):
     histogram = dict()
     for line in f:
         for word in line.split():
-            if word.lower() not in useless_words:
+            if word.lower() in noun_list and word.lower() not in useless_words:
                 if word in histogram:
                     histogram[word] += 1
                 else:  
@@ -61,7 +62,7 @@ def random_book():
 def show_histogram(file=None):
     hist = build_histogram(file)
     sorted_hist = sorted(hist.items(), key=operator.itemgetter(1),reverse=True)
-    slice = sorted_hist[:30]
+    slice = sorted_hist[:15]
     y_pos = np.arange(len(slice))
     names = [x[0] for x in slice]
     values = [x[1] for x in slice]
@@ -166,6 +167,24 @@ def ot_interpolation(files=['./discrete_discrete/TEXTSBYAUTHORS/NAPOLEON/pg3567.
                 pass
         c[:,i] = c[:,i] / np.sum(c[:,i])
     print("Done.")
+    
+    
+    
+    if k==2:
+        # Apply Sinkhorn once to calculate the distance
+        a = np.ones(n); b = np.ones(n)
+        err_h = []
+        for _ in range(iterations):
+            a[:] = c[:,0] / xi(b[:])
+            b[:] = c[:,1] / xi(a[:])
+            diff = a * xi(b[:]) - c[:,0]
+            err = np.sum(np.abs(diff)**2)
+            err_h.append(err)
+        #plt.semilogy(err_h)
+        #plt.show()
+        #plt.pause(1)
+        dist = (M * Xi).dot(b).dot(a)
+        print("Distance is",dist)
     
     def calculate_interpol(lbd=None):
         if lbd is None:
