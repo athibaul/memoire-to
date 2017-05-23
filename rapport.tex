@@ -425,7 +425,18 @@ Un fichier de démonstration \texttt{barycentre\_demo.py} est inclus dans le dos
 \end{figure}
 
 \subsubsection{Interpolations de nuages de mots}
-[TODO]
+Le transport optimal régularisé, calculé à l'aide de l'algorithme de Sinkhorn, fonctionne de la même façon quelle que soit la dimension de l'espace considéré. On peut donc effectuer le calcul sur un histogramme de mots. Ainsi, étant donnés deux textes, on peut calculer la distances qui les sépare, en termes de champ lexical.
+
+Dans ce but, nous avons utilisé un \emph{word embedding}, ou plongement lexical. Un word embedding $p$ est une application qui, à chaque mot d'une langue, associe un vecteur dans un espace de dimension $N$ (où $N$ est généralement de l'ordre de quelques centaines). Les contraintes sur ce plongement le rendent utile pour des questions d'ordre sémantique~:
+\begin{itemize}
+\item Les points voisins ont des sens proches. Par exemple, les différents noms reliés à une même espèce animale seront peu éloignés.
+\item Les vecteurs $p(b_i) - p(a_i)$ sont similaires pour des familles de mots où $a_i$ et $b_i$ ont la même relation sémantique ; par exemple \og homme \fg et \og femme \fg, \og roi \fg et \og reine \fg, ou \og oncle \fg et \og tante \fg. De la même façon, en anglais les superlatifs \og stronger \fg, \og softer \fg, etc. seront reliés à l'adjectif correspondant par un vecteur similaire.
+\end{itemize}
+De tels plongements sont utilisés dans diverses applications d'intelligence artificielle qui travaillent avec du texte. Il en existe plusieurs : nous avons ici utilisé \og GloVe \fg, en anglais.
+
+Ici, nous utilisons le plongement afin de pouvoir mettre une distance sur l'ensemble des mots. Le coût de transport d'un mot vers l'autre est le carré de la distance euclidienne entre les vecteurs correspondants. L'ensemble des mots devient alors un espace métrique discret, sur lequel on peut donc calculer un transport et trouver des barycentres de la même façon que précédemment.
+
+
 
 
 \medskip
