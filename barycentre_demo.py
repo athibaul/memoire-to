@@ -1,3 +1,12 @@
+"""
+Démonstration du calcul de barycentres par Sinkhorn.
+
+
+Utilise matplotlib, numpy et scipy.
+
+"""
+
+
 import numpy as np
 from scipy.signal import convolve2d
 import matplotlib.pyplot as plt

@@ -373,14 +373,14 @@ Le premier élément que l'on observe est la convergence de l'algorithme. Un ré
 
 Les plans de transport obtenus (figure \ref{fig:1d_maps}) montrent les effets attendus de la régularisation entropique~: on obtient des objets plus lisses, et d'autant plus lisses que $\epsilon$ est grand. Pour $\epsilon$ très grand, le plan de transport tend vers l'extrémum de l'entropie sur $\Pi(\mu,\nu)$, c'est-à-dire le produit tensoriel $\gamma_{i,j} = \mu_i \nu_j$. C'est effectivement ce que l'on observe pour $\epsilon=10$. À l'opposé, plus $\epsilon$ est petit, plus la mesure a tendance à devenir concentrée.
 
-\begin{figure}
+\begin{figure}[ht]
 \centering
 \includegraphics[width=10cm]{1d_err.png}
 \caption{Diminution de l'erreur au fil des itérations de Sinkhorn, pour différentes valeurs de $\epsilon$}
 \label{fig:1d_cv}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[ht]
 \centering
 \begin{subfigure}[b]{5cm}
 \includegraphics[width=5cm]{1d_interp_0_1.png}
@@ -411,11 +411,11 @@ Les plans de transport obtenus (figure \ref{fig:1d_maps}) montrent les effets at
 Parmi les nombreuses applications du transport optimal, celles que nous avons choisi de mettre en \oe uvre dans le cadre de ce mémoire sont liées au calcul de barycentre. Il est question d'interpolation de formes, où on s'intéresse au fait de trouver des barycentres entre des parties de $[0;1]^2$ ; et d'interpolation de nuages de mots, où on se sert d'un \emph{word embedding} pour trouver des histogrammes intermédiaires prenant en compte la sémantique.
 
 \subsubsection{Interpolation de formes}
-Une utilisation assez basique du transport optimal est l'application à l'interpolation de formes géométriques. Afin de se placer dans le cadre numérique adapté, on identifie des images bidimensionnelles à des répartitions discrètes. On utilise ensuite l'algorithme de Sinkhorn pour calculer les barycentres de ces répartitions. Le résultat est illustré figure \ref{fig:2d_interp}.
+Une utilisation assez basique du transport optimal est l'application à l'interpolation de formes géométriques. Afin de se placer dans le cadre numérique adapté, on identifie des images bidimensionnelles à des répartitions discrètes. On utilise ensuite l'algorithme de Sinkhorn pour calculer les barycentres de ces répartitions. Le résultat est illustré figure \ref{fig:2d_interp}. Un fichier de démonstration \texttt{barycentre_demo.py} est inclus dans le dossier.
 
 
 
-\begin{figure}
+\begin{figure}[ht]
 \centering
 \includegraphics[width=10cm]{2d_interp.png}
 \caption{Interpolation de formes géométriques bidimensionnelles par transport optimal}
