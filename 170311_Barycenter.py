@@ -103,7 +103,7 @@ def test1():
 
 
 def test2():
-    n = 40//2
+    n = 80//2
     r = 4*n//5
     r1 = n//2
     rep1 = [[x*x+y*y < r*r for y in range(-n,n+1)] for x in range(-n,n+1)]
@@ -112,9 +112,9 @@ def test2():
     rep2 = normalize(np.array(rep2))
     plt.subplot(121);plt.imshow(rep1)
     plt.subplot(122);plt.imshow(rep2)
-    plt.show()
+    #plt.show()
     
-    plot_interpol(rep1,rep2,gamma=0.05**2)
+    plot_interpol(rep1,rep2,gamma=0.03**2)
 
 
 
@@ -177,7 +177,7 @@ def plot_interpol3(rep1,rep2,rep3,subs=4,gamma=0.04**2):
     rep1 = normalize(rep1); rep2 = normalize(rep2); rep3 = normalize(rep3)
     P = np.zeros((n,n,3))
     P[:,:,0] = rep1; P[:,:,1] = rep2; P[:,:,2] = rep3
-    gs = grsp.GridSpec(2*subs,subs)
+    gs = grsp.GridSpec(subs,2*subs)
     total = subs*(subs+1)/2
     count = 0
     for i in range(subs):
@@ -188,21 +188,21 @@ def plot_interpol3(rep1,rep2,rep3,subs=4,gamma=0.04**2):
             beta = j / (subs-1)
             lbd = np.array([alpha, beta, 1-alpha-beta])
             q = barycenter(P,lbd,gamma=gamma)
-            ax = plt.subplot(gs[i+2*j:i+2*(j+1), i])
-            ax.get_xaxis().set_ticks([])
-            ax.get_yaxis().set_ticks([])
+            ax = plt.subplot(gs[i,i+2*j:i+2*(j+1)])
+            #ax.get_xaxis().set_ticks([])
+            #ax.get_yaxis().set_ticks([])
+            ax.axis('off')
             q_color = make_color_image(q,alpha,beta)
-            ax.imshow(q_color)
+            ax.imshow(q_color,interpolation='bicubic')
     plt.show()
 
 def test6():
     n = 50
+    nm = n/10; nM = n-nm
     xx = np.arange(n+1); yy = np.arange(n+1)
     rep1 = circle(xx,yy,n/2,n/2,2*n/5) - circle(xx,yy,n/2,n/2,n/5)
-    rep2 = [[ (y<n/5 or abs(x-n/2)<n/10) for x in range(n+1)] for y in range(n+1)]
-    def f1(x,y):
-        return np.logical_or(y<n/5, np.logical_or(y>4*n/5, abs(x-y) < n/5))
-    rep3 = np.fromfunction(f1,(n+1,n+1))
+    rep2 = [[ (nm<y<3*nm and nm<x<nM or (abs(x-n/2)<nm and nm<y<nM)) for x in range(n+1)] for y in range(n+1)]
+    rep3 = [[ (nm<y<3*nm and nm<x<nM) or (abs(x-y)<2*nm and nm<x<nM and nm<y<nM) or (nM-2*nm<y<nM and nm<x<nM) for y in range(n+1)] for x in range(n+1)]
     
     plot_interpol3(rep1,rep2,rep3,subs=5,gamma=0.045**2)
     
