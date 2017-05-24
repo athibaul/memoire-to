@@ -162,6 +162,35 @@ def show_sinkhorn_convergence(M,Xi,xi,c,n,iterations):
 
 
 
+def book_list():
+    import os
+    base = "./discrete_discrete/TEXTSBYAUTHORS"
+    all = []
+    for file_or_dir in os.listdir(base):
+        author = file_or_dir
+        file_or_dir = os.path.join(base,file_or_dir)
+        if os.path.isdir(file_or_dir):
+            for textfile in os.listdir(file_or_dir):
+                textfile_ = os.path.join(file_or_dir, textfile)
+                if os.path.isfile(textfile_) and textfile.endswith(".txt"):
+                    all.append((textfile_,author,textfile[:-4]))
+    return all
+
+def choose_books():
+    import sys
+    print("Les livres disponibles sont :")
+    all = book_list()
+    shape = "{:>15}{:>30}{:>10}"
+    print(shape.format("Auteur","Titre","Code"))
+    for i,vals in enumerate(all):
+        (path,author,filename) = vals
+        print(shape.format(author,filename,i))
+    print("Entrez les numéros de livres choisis (exemple : 306,495) :")
+    input = sys.stdin.readline()[:-1]
+    chosen = input.split(',')
+    chosen_paths = [all[int(i)][0] for i in chosen]
+    return chosen_paths
+    
 
 ## Main
 
