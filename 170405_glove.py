@@ -62,7 +62,7 @@ def random_book():
 def show_histogram(file=None):
     hist = build_histogram(file)
     sorted_hist = sorted(hist.items(), key=operator.itemgetter(1),reverse=True)
-    slice = sorted_hist[:15]
+    slice = sorted_hist[:30]
     y_pos = np.arange(len(slice))
     names = [x[0] for x in slice]
     values = [x[1] for x in slice]

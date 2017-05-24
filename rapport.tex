@@ -251,6 +251,8 @@ Chaque membre de l'égalité ne dépendant que d'une variable à la fois, on en 
 
 La difficulté du problème initial résidait dans le fait de trouver quelles contraintes sont actives (i.e. quels coefficients de $\gamma$ sont nuls). Pour le problème régularisé, aucune contrainte n'est active. Ceci semblait impliquer que de nombreux calculs étaient nécessaires pour déterminer les $n^2$ coefficients de $\gamma$. Seulement, comme nous venons de le montrer, la solution du problème a une forme particulière $\gamma^\epsilon = \diag(a)\;G\,\diag(b)$. Le calcul du plan optimal consistera donc à trouver les $2n$ coefficients de $a$ et $b$.
 
+Remarquons que, bien que le calcul de $W^\epsilon(\mu,\nu) = K^\epsilon(\gamma^\epsilon)$ nous fournisse encore une mesure de la disparité de deux mesures en termes spatiaux, il ne s'agit plus d'une \emph{distance} au sens mathématique. En effet, la régularisation entropique empêche $\gamma^\epsilon$ d'avoir son support inclus dans la diagonale dans le cas où $\mu = \nu$ si l'espace est non trivial. On n'aura donc pas $W^\epsilon (\mu,\mu) = 0$ en général.
+
 \section{Algorithme de Sinkhorn}
 
 \subsection{Algorithme}
@@ -373,14 +375,14 @@ Le premier élément que l'on observe est la convergence de l'algorithme. Un ré
 
 Les plans de transport obtenus (figure \ref{fig:1d_maps}) montrent les effets attendus de la régularisation entropique~: on obtient des objets plus lisses, et d'autant plus lisses que $\epsilon$ est grand. Pour $\epsilon$ très grand, le plan de transport tend vers l'extrémum de l'entropie sur $\Pi(\mu,\nu)$, c'est-à-dire le produit tensoriel $\gamma_{i,j} = \mu_i \nu_j$. C'est effectivement ce que l'on observe pour $\epsilon=10$. À l'opposé, plus $\epsilon$ est petit, plus la mesure a tendance à devenir concentrée.
 
-\begin{figure}[t]
+\begin{figure}
 \centering
 \includegraphics[width=10cm]{1d_err.png}
 \caption{Diminution de l'erreur au fil des itérations de Sinkhorn, pour différentes valeurs de $\epsilon$}
 \label{fig:1d_cv}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}
 \centering
 \begin{subfigure}[b]{5cm}
 \includegraphics[width=5cm]{1d_interp_0_1.png}
@@ -417,7 +419,7 @@ On utilise ensuite l'algorithme de Sinkhorn pour calculer les barycentres de ces
 Le résultat est illustré figure \ref{fig:2d_interp}.
 Un fichier de démonstration \texttt{barycentre\_demo.py} est inclus dans le dossier.
 
-\begin{figure}[t]
+\begin{figure}
 \centering
 \includegraphics[height=10cm]{2d_interp.png}
 \caption{Interpolation de formes géométriques bidimensionnelles par transport optimal}
@@ -425,16 +427,36 @@ Un fichier de démonstration \texttt{barycentre\_demo.py} est inclus dans le dos
 \end{figure}
 
 \subsubsection{Interpolations de nuages de mots}
-Le transport optimal régularisé, calculé à l'aide de l'algorithme de Sinkhorn, fonctionne de la même façon quelle que soit la dimension de l'espace considéré. On peut donc effectuer le calcul sur un histogramme de mots. Ainsi, étant donnés deux textes, on peut calculer la distances qui les sépare, en termes de champ lexical.
+Le transport optimal régularisé, calculé à l'aide de l'algorithme de Sinkhorn, fonctionne de la même façon quelle que soit la dimension de l'espace considéré. On peut donc effectuer le calcul dans un espace de grande dimension. Une utilisation possible est l'estimation de la distance entre deux textes, en termes de champ lexical.
 
 Dans ce but, nous avons utilisé un \emph{word embedding}, ou plongement lexical. Un word embedding $p$ est une application qui, à chaque mot d'une langue, associe un vecteur dans un espace de dimension $N$ (où $N$ est généralement de l'ordre de quelques centaines). Les contraintes sur ce plongement le rendent utile pour des questions d'ordre sémantique~:
 \begin{itemize}
 \item Les points voisins ont des sens proches. Par exemple, les différents noms reliés à une même espèce animale seront peu éloignés.
-\item Les vecteurs $p(b_i) - p(a_i)$ sont similaires pour des familles de mots où $a_i$ et $b_i$ ont la même relation sémantique ; par exemple \og homme \fg et \og femme \fg, \og roi \fg et \og reine \fg, ou \og oncle \fg et \og tante \fg. De la même façon, en anglais les superlatifs \og stronger \fg, \og softer \fg, etc. seront reliés à l'adjectif correspondant par un vecteur similaire.
+\item Les vecteurs $p(b_i) - p(a_i)$ sont similaires pour des familles de mots où $a_i$ et $b_i$ ont la même relation sémantique ; par exemple \og homme \fg et \og femme \fg, \og roi \fg et \og reine \fg, ou \og oncle \fg et \og tante \fg. De la même façon, en anglais les superlatifs \og stronger \fg, \og softer \fg, etc. seront reliés à l'adjectif correspondant par des vecteurs similaires.
 \end{itemize}
-De tels plongements sont utilisés dans diverses applications d'intelligence artificielle qui travaillent avec du texte. Il en existe plusieurs : nous avons ici utilisé \og GloVe \fg, en anglais.
+De tels plongements sont utilisés dans diverses applications d'intelligence artificielle qui travaillent avec du texte. Il en existe plusieurs : nous avons ici utilisé \og GloVe \fg, sur un dictionnaire anglais.
 
 Ici, nous utilisons le plongement afin de pouvoir mettre une distance sur l'ensemble des mots. Le coût de transport d'un mot vers l'autre est le carré de la distance euclidienne entre les vecteurs correspondants. L'ensemble des mots devient alors un espace métrique discret, sur lequel on peut donc calculer un transport et trouver des barycentres de la même façon que précédemment.
+
+\begin{figure}
+\centering
+\includegraphics[width=14cm]{text_romeo_obama.png}
+\caption{Interpolation de nuages de mots entre \emph{Roméo et Juliette} et l'article Wikipédia ``Barack Obama''.}
+\label{fig:romeo_obama}
+\end{figure}
+
+Afin de représenter graphiquement un histogramme de mots, la librairie \texttt{wordcloud} de Python a été utilisée. Elle permet de facilement créer des nuages de mots, où les mots les plus communs apparaissent plus gros.
+Un exemple de résultat est proposé figure \ref{fig:romeo_obama}.
+On observe que les mots qui apparaissent souvent sont en fait ceux des champs lexicaux proches que les deux textes évoquent : \emph{time, good, care}.
+On peut s'amuser du fait que les mots \emph{act} et \emph{house} apparaissent assez gros dans le nuage central, alors qu'ils ont des sens bien différents entre les deux textes.
+Mais on remarque surtout que dans les histogrammes centraux, un nombre limité de mots cumule la plupart du poids, et qu'il s'agit de mots ayant des sens et des utilisations très diverses (tels que \emph{time}, \emph{good}, \emph{tell} ou \emph{make}).
+Une interprétation possible est que ces mots sont relativement centraux dans le plongement lexical, et que pour passer d'un mot à un autre sans aucun lien, il est préférable de passer par des mots \og neutres \fg.
+
+Ce traitement permet d'estimer la similarité lexicale des textes, et donc de les regrouper selon les champs lexicaux utilisés. On remarque que l'algorithme regroupe très bien les textes d'un même auteur~: les différents textes d'Aristote, de Jefferson, les pièces de Shakespeare, entre autres, sont bien regroupés entre eux. Certains ouvrages de Woolf sont rapprochés de ceux de Stevenson ou de \emph{Harry Potter}, certainement pour des raisons de thèmes (il y est notamment question de jeunesse en Angleterre).
+
+Le transport optimal entre nuages de mots permet donc de rapidement faire ressortir certains aspects d'un texte contenus dans son champ lexical.
+Il permet également de s'amuser à imaginer à quoi ressemblerait un livre écrit par un auteur à mi-chemin entre Dickens et Nietzsche.
+
 
 
 

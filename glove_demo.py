@@ -162,7 +162,7 @@ def show_sinkhorn_convergence(M,Xi,xi,c,n,iterations,files,show_convergence=True
     if show_convergence:
         fig = plt.figure()
         plt.semilogy(err_h)
-        plt.legend("Distance = {}".format(dist))
+        plt.title("Distance = {}".format(dist))
         plt.show()
         plt.pause(3)
         plt.close(fig)
@@ -185,6 +185,7 @@ def book_list():
 
 def choose_books():
     import sys
+    global titles
     print("Les livres disponibles sont :")
     all = book_list()
     shape = "{:>15}{:>30}{:>10}"
@@ -196,6 +197,7 @@ def choose_books():
     input = sys.stdin.readline()[:-1]
     chosen = input.split(',')
     chosen_paths = [all[int(i)][0] for i in chosen]
+    titles = [all[int(i)][2] for i in chosen]
     return chosen_paths
     
 
@@ -267,27 +269,55 @@ def ot_interpolation(files=['./discrete_discrete/TEXTSBYAUTHORS/NAPOLEON/pg3567.
     return calculate_interpol
 
 
-def show_interp(files = ['./discrete_discrete/TEXTSBYAUTHORS/DICKENS/dickens-oliver-627.txt','./discrete_discrete/TEXTSBYAUTHORS/KANT/kant-critique-141.txt'],nb_subplots=5):
+def show_interpolation(interp,nb_subplots):
     from wordcloud import WordCloud
-    interp = ot_interpolation(files)
-    def color_func(word,font_size,position,orientation,font_path,random_state):
-        return (255,255,255)
-    
     print("Calculating interpolations...",end="")
+    def color_func(word,font_size,position,orientation,font_path,random_state):
+        return (0,0,0)
     for i,t in enumerate(np.linspace(0,1,nb_subplots)):
         ot_interp = interp([1-t,t])
-        wc = WordCloud(width=300,height=500,color_func=color_func).generate_from_frequencies({ w : f for f,w in ot_interp })
+        wc = WordCloud(width=300,height=500,color_func=color_func,background_color="white").generate_from_frequencies({ w : f for f,w in ot_interp })
         ax = plt.subplot(1,nb_subplots,i+1)
         ax.imshow(wc,interpolation='bilinear')
         ax.axis('off')
+        if i==0:
+            plt.title(titles[0])
+        elif i==nb_subplots-1:
+            plt.title(titles[1])
     print(" Done.")
     plt.show()
+
+
+def print_book_distances():
+    items = book_distances.items()
+    items = [ (dist, books) for (books,dist) in items]
+    items.sort()
+    shape = "{:5.5}{:>30}{:>30}"
+    print(shape.format("Dist","Titre 1","Titre 2"))
+    def reformat(b):
+        b = b.replace('\\','/')
+        return b.split('/')[-1][:-4]
+    for dist,books in items:
+        if len(books)==2:
+            b1,b2 = books
+            print(shape.format(dist,reformat(b1),reformat(b2)))
+    
+
+
+titles = ["",""]
+def show_interp(files = ['./discrete_discrete/TEXTSBYAUTHORS/DICKENS/dickens-oliver-627.txt','./discrete_discrete/TEXTSBYAUTHORS/KANT/kant-critique-141.txt'],nb_subplots=5):
+    global titles
+    interp = ot_interpolation(files)
+    if len(files) == 2:
+        show_interpolation(interp,nb_subplots)
+    else:
+        print_book_distances()
 
 ## Interactive part
 
 print("Ceci est une démonstration de l'interpolation de nuages de mots.")
-print("Vous allez devoir choisir deux textes, et nous alons construire les histogrammes lexicaux de ces deux textes.")
-print("Puis nous allons interpoler les histogrammes, par transport optimal régularisé.")
+print("Vous allez devoir choisir deux textes, et nous allons construire les histogrammes lexicaux de ces deux textes.")
+print("Puis nous allons interpoler ces histogrammes, par transport optimal régularisé.")
 print("Appuyez sur Entrée pour continuer...")
 sys.stdin.readline()
 books = choose_books()
