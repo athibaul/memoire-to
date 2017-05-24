@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import sys
 import matplotlib.pyplot as plt
 import operator
 import random
@@ -30,6 +31,9 @@ def parse_files(glove='glove.txt',dict_txt='dict.txt'):
 
 if 'dic' not in globals():
     parse_files()
+
+if 'book_distances' not in globals():
+    book_distances = dict()
     
 #useless_words = open('common-english-words.txt','r').read().split(',')
 useless_words = ["a", "about", "above", "above", "across", "after", "afterwards", "again", "against", "all", "almost", "alone", "along", "already", "also","although","always","am","among", "amongst", "amoungst", "amount",  "an", "and", "another", "any","anyhow","anyone","anything","anyway", "anywhere", "are", "around", "as",  "at", "back","be","became", "because","become","becomes", "becoming", "been", "before", "beforehand", "behind", "being", "below", "beside", "besides", "between", "beyond", "bill", "both", "bottom","but", "by", "call", "can", "cannot", "cant", "co", "con", "could", "couldnt", "cry", "de", "describe", "detail", "do", "done", "down", "due", "during", "each", "eg", "eight", "either", "eleven","else", "elsewhere", "empty", "enough", "etc", "even", "ever", "every", "everyone", "everything", "everywhere", "except", "few", "fifteen", "fify", "fill", "find", "fire", "first", "five", "for", "former", "formerly", "forty", "found", "four", "from", "front", "full", "further", "get", "give", "go", "had", "has", "hasnt", "have", "he", "hence", "her", "here", "hereafter", "hereby", "herein", "hereupon", "hers", "herself", "him", "himself", "his", "how", "however", "hundred", "ie", "if", "in", "inc", "indeed", "interest", "into", "is", "it", "its", "itself", "keep", "last", "latter", "latterly", "least", "less", "ltd", "made", "many", "may", "me", "meanwhile", "might", "mill", "mine", "more", "moreover", "most", "mostly", "move", "much", "must", "my", "myself", "name", "namely", "neither", "never", "nevertheless", "next", "nine", "no", "nobody", "none", "noone", "nor", "not", "nothing", "now", "nowhere", "of", "off", "often", "on", "once", "one", "only", "onto", "or", "other", "others", "otherwise", "our", "ours", "ourselves", "out", "over", "own","part", "per", "perhaps", "please", "put", "rather", "re", "same", "see", "seem", "seemed", "seeming", "seems", "serious", "several", "she", "should", "show", "side", "since", "sincere", "six", "sixty", "so", "some", "somehow", "someone", "something", "sometime", "sometimes", "somewhere", "still", "such", "system", "take", "ten", "than", "that", "the", "their", "them", "themselves", "then", "thence", "there", "thereafter", "thereby", "therefore", "therein", "thereupon", "these", "they", "thickv", "thin", "third", "this", "those", "though", "three", "through", "throughout", "thru", "thus", "to", "together", "too", "top", "toward", "towards", "twelve", "twenty", "two", "un", "under", "until", "up", "upon", "us", "very", "via", "was", "we", "well", "were", "what", "whatever", "when", "whence", "whenever", "where", "whereafter", "whereas", "whereby", "wherein", "whereupon", "wherever", "whether", "which", "while", "whither", "who", "whoever", "whole", "whom", "whose", "why", "will", "with", "within", "without", "would", "yet", "you", "your", "yours", "yourself", "yourselves", "the"]
@@ -141,7 +145,7 @@ def histograms_to_vectors(hists,word_index,n,k):
         c[:,i] = c[:,i] / np.sum(c[:,i])
     return c
 
-def show_sinkhorn_convergence(M,Xi,xi,c,n,iterations):
+def show_sinkhorn_convergence(M,Xi,xi,c,n,iterations,files,show_convergence=True):
     # Apply Sinkhorn once to calculate the distance
     a = np.ones(n); b = np.ones(n)
     err_h = []
@@ -152,13 +156,16 @@ def show_sinkhorn_convergence(M,Xi,xi,c,n,iterations):
         err = np.sum(np.abs(diff)**2)
         err_h.append(err)
     dist = (M * Xi).dot(b).dot(a)
+    i = frozenset(files)
+    book_distances[i] = dist
     print("Distance is",dist)
-    fig = plt.figure()
-    plt.semilogy(err_h)
-    plt.legend("Distance = {}".format(dist))
-    plt.show()
-    plt.pause(3)
-    plt.close(fig)
+    if show_convergence:
+        fig = plt.figure()
+        plt.semilogy(err_h)
+        plt.legend("Distance = {}".format(dist))
+        plt.show()
+        plt.pause(3)
+        plt.close(fig)
 
 
 
@@ -192,7 +199,7 @@ def choose_books():
     return chosen_paths
     
 
-## Main
+## Main function
 
 
 def ot_interpolation(files=['./discrete_discrete/TEXTSBYAUTHORS/NAPOLEON/pg3567.txt','./discrete_discrete/TEXTSBYAUTHORS/SHAKESPEARE/shakespeare-romeo-48.txt'], iterations=100, wordcount=3000):
@@ -218,7 +225,7 @@ def ot_interpolation(files=['./discrete_discrete/TEXTSBYAUTHORS/NAPOLEON/pg3567.
     print("Distance matrix built.")
     print(M)
     
-    epsilon = 10
+    epsilon = 7
     Xi = np.exp(-M/epsilon)
     def xi(v):
         return Xi.dot(v) + 1e-50
@@ -230,7 +237,13 @@ def ot_interpolation(files=['./discrete_discrete/TEXTSBYAUTHORS/NAPOLEON/pg3567.
     
     
     if k==2:
-        show_sinkhorn_convergence(M,Xi,xi,c,n,iterations)
+        show_sinkhorn_convergence(M,Xi,xi,c,n,iterations,files,show_convergence=True)
+    else:
+        for i in range(k):
+            for j in range(i):
+                c_ = np.stack((c[:,j],c[:,i]),axis=1)
+                files_ = [files[j], files[i]]
+                show_sinkhorn_convergence(M,Xi,xi,c_,n,iterations,files_,show_convergence=False)
     
     def calculate_interpol(lbd=None):
         if lbd is None:
@@ -254,20 +267,6 @@ def ot_interpolation(files=['./discrete_discrete/TEXTSBYAUTHORS/NAPOLEON/pg3567.
     return calculate_interpol
 
 
-
-def interpolated_lipsum(ot_interp,total=10000):
-    words = [w for v,w in ot_interp]
-    values = np.array([v for v,w in ot_interp])
-    values *= total/np.sum(values)
-    values = np.cumsum(values)
-    w_i = 0
-    out = ""
-    for k in range(total):
-        while k > values[w_i]:
-            w_i += 1
-        out += words[w_i] + " "
-    return out
-
 def show_interp(files = ['./discrete_discrete/TEXTSBYAUTHORS/DICKENS/dickens-oliver-627.txt','./discrete_discrete/TEXTSBYAUTHORS/KANT/kant-critique-141.txt'],nb_subplots=5):
     from wordcloud import WordCloud
     interp = ot_interpolation(files)
@@ -284,3 +283,12 @@ def show_interp(files = ['./discrete_discrete/TEXTSBYAUTHORS/DICKENS/dickens-oli
     print(" Done.")
     plt.show()
 
+## Interactive part
+
+print("Ceci est une démonstration de l'interpolation de nuages de mots.")
+print("Vous allez devoir choisir deux textes, et nous alons construire les histogrammes lexicaux de ces deux textes.")
+print("Puis nous allons interpoler les histogrammes, par transport optimal régularisé.")
+print("Appuyez sur Entrée pour continuer...")
+sys.stdin.readline()
+books = choose_books()
+show_interp(books)
