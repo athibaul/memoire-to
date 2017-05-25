@@ -458,8 +458,14 @@ Le transport optimal entre nuages de mots permet donc de rapidement faire ressor
 Il permet également de s'amuser à imaginer à quoi ressemblerait un livre écrit par un auteur à mi-chemin entre Dickens et Nietzsche.
 
 
+\section{Conclusion}
 
+Le transport optimal fournit une distance naturelle entre des mesures, appelée \emph{métrique de Wasserstein}. À la différence des normes $l^p$, cette distance prend en compte la structure métrique de l'espace sous-jacent. Elle permet d'accomplir différentes tâches, par exemple de classification de différents types d'histogrammes. On en tire aussi une notion de barycentre, qui permet des interpolations d'objets variés.
 
+Le transport optimal \emph{régularisé} est un problème strictement convexe approximant de manière naturelle le transport optimal. La forme particulière du problème permet de le résoudre assez simplement par l'\emph{algorithme de Sinkhorn}, qui consiste en de simples opérations matricielles.
+Une variante de l'algorithme de Sinkhorn permet de également de calculer des barycentres.
+La complexité de calcul est bien inférieure à celle des méthodes de programmation linéaire qui résolvent le problème initial, et les solutions sont de bonnes approximations, quoique plus lisses.
+C'est pourquoi le transport optimal régularisé est un outil puissant pour de nombreuses applications telles que le traitement d'images ou le \emph{machine learning}.
 
 \medskip
 \begin{thebibliography}{99}
@@ -472,6 +478,8 @@ L. M. Bregman. The relaxation method of finding the common point of
 convex sets and its application to the solution of problems in convex programming.
 \textit{USSR computational mathematics and mathematical physics},
 7(3):200–217, 1967.
+\bibitem{benamou15}
+Benamou, Jean-David, et al. ``Iterative Bregman projections for regularized transportation problems.'' \textit{SIAM Journal on Scientific Computing} 37.2 (2015): A1111-A1138.
 \end{thebibliography}
 
 \end{document}
