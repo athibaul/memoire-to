@@ -18,7 +18,7 @@
 
 \section{Transport optimal}
 
-\subsection{Formulation du problème}
+\subsection{Problème de Monge-Kantorovich}
 La formulation initiale du problème de transport est due à Monge. Il est question de transporter une mesure de probabilité sur $\mu$ sur $\IR^d$ vers une autre $\nu$ par une application $T\,:\,\IR^d \rightarrow \IR^d$, de façon à ce que $\nu$ soit la mesure image de $\mu$ par $T$, en minimisant la quantité~:
 \begin{equation}
 \label{eq:monge}
@@ -389,7 +389,7 @@ Puis on itère (jusqu'à ce qu'un critère d'arrêt convenable soit vérifié)~:
 \end{tabular}
 \end{table}
 La notation $\odot$ désigne le produit élément par élément.
-Dans \ref{benamou15}, il est montré que cet algorithme est correct et que la suite $(q^k)$ converge vers le barycentre du problème régularisé.
+Dans \cite{benamou15}, il est montré que cet algorithme est correct et que la suite $(q^k)$ converge vers le barycentre du problème régularisé.
 
 \section{Exemples et applications}
 
@@ -496,11 +496,13 @@ C'est pourquoi le transport optimal régularisé est un outil puissant pour de n
 \begin{thebibliography}{99}
 \bibitem{villani08}
 Villani, Cédric. \textit{Optimal transport: old and new.} Vol. 338. Springer Science \& Business Media, 2008.
+\bibitem{santambrogio15}
+Santambrogio, Filipo. \textit{Optimal Transport for Applied Mathematicians}. Progress in Nonlinear Differential Equations and Their Applications, vol. 87. Birkhäuser, 2015.
 \bibitem{cuturi13}
 Cuturi, Marco. ``Sinkhorn distances: Lightspeed computation of optimal transport.'' \textit{Advances in Neural Information Processing Systems.} 2013.
 \bibitem{bregman66}
-L. M. Bregman. The relaxation method of finding the common point of
-convex sets and its application to the solution of problems in convex programming.
+L. M. Bregman. ``The relaxation method of finding the common point of
+convex sets and its application to the solution of problems in convex programming.''
 \textit{USSR computational mathematics and mathematical physics},
 7(3):200–217, 1967.
 \bibitem{benamou15}

@@ -7,3 +7,9 @@ stage_logement.doc
 GLOVE300_1e5.mat
 politique/*
 glove.txt
+*.out
+*.aux
+*.log
+*.snm
+*.toc
+*.nav

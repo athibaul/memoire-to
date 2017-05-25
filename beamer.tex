@@ -1,0 +1,345 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+
+
+
+\documentclass{beamer}
+
+
+
+\mode<presentation>
+{
+  \usetheme{Szeged}
+}
+
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[francais]{babel}
+\usepackage[]{amsmath}
+\usepackage[]{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage{bbm}
+\usepackage[margin=1cm]{caption}
+
+
+% Pour utiliser le symbole "non équivalent"
+\DeclareMathOperator{\nequiv}{
+    \Longleftrightarrow\kern-1.3em \not \kern1.3em
+}
+\DeclareMathOperator*{\argmin}{argmin}
+\newcommand{\transpose}{\intercal}
+\DeclareMathOperator{\IR}{\mathbb{R}}
+\DeclareMathOperator{\IN}{\mathbb{N}}
+\DeclareMathOperator{\One}{\mathbbm{1}}
+
+\DeclareMathOperator{\diag}{\mathbf{diag}}
+\DeclareMathOperator{\Ccal}{\mathcal{C}}
+
+
+
+
+
+\title{Transport optimal et régularisation}
+
+\subtitle{L3 Maths-Info}
+
+\author{Alexis \textsc{Thibault}}
+
+\institute{ENS}
+
+\date{Mai 2017}
+
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>{Plan}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command: 
+
+%\beamerdefaultoverlayspecification{<+->}
+
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Plan}
+  \tableofcontents
+\end{frame}
+
+
+% Structuring a talk is a difficult task and the following structure
+% may not be suitable. Here are some rules that apply for this
+% solution: 
+
+% - Exactly two or three sections (other than the summary).
+% - At *most* three subsections per section.
+% - Talk about 30s to 2min per frame. So there should be between about
+%   15 and 30 frames, all told.
+
+% - A conference audience is likely to know very little of what you
+%   are going to talk about. So *simplify*!
+% - In a 20min talk, getting the main ideas across is hard
+%   enough. Leave out details, even if it means being less precise than
+%   you think necessary.
+% - If you omit details that are vital to the proof/implementation,
+%   just say so once. Everybody will be happy with that.
+
+\section{Transport optimal}
+
+\subsection{Problème de Monge}
+
+\begin{frame}{Question initiale}
+
+	Répartition de masse = histogramme = mesure de probabilité.
+	
+    Problème : comment transporter une mesure de probabilité $\mu$ vers une autre $\nu$ efficacement ?
+	\pause
+    \begin{itemize}
+    \item Monge : par une application 
+    $ T :     \IR^d     \rightarrow     \IR^d $ \og proche \fg de l'identité
+    \includegraphics[height=5cm]{transport_monge.png}
+    \end{itemize}
+    
+\end{frame}
+
+\begin{frame}{Question initiale}
+
+	Répartition de masse = histogramme = mesure de probabilité.
+	
+    Problème : comment transporter une mesure de probabilité $\mu$ vers une autre $\nu$ ?
+    \begin{itemize}
+    \item Kantorovich : par un plan de transport
+    \includegraphics[height=5cm]{1d_interp_2.png}
+    \end{itemize}
+    
+\end{frame}
+
+\subsection{Problème de Kantorovich}
+
+\begin{frame}{Formulation de Kantorovich}
+\[
+\begin{split}
+\Pi(\mu,\nu) = \{\gamma\;\text{mesure de probabilité sur}\,X\times Y\;| \\
+\;(\pi_X)_\# \gamma = \mu,\; (\pi_Y)_\# \gamma = \nu\}
+\end{split}
+\]
+	\begin{itemize}
+	\item Symétrique
+	\item Permet de séparer les masses de Dirac
+	\item Adapté au cas discret
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Question de minimisation}
+\begin{itemize}
+\item $c$ coût de transport ponctuel (exemple : distance)
+\[
+K(\gamma) = \int_{X\times Y} c\,d\gamma \; ,\quad \text{où} \quad \gamma \in \Pi(\mu,\nu)
+\]
+\pause
+\item Coût de transport optimal~:
+\[C(\mu,\nu) = \min_{\gamma \in \Pi(\mu,\nu)} K(\gamma) \]
+\pause
+\item Distance (symétrique, définie, inégalité triangulaire)
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Calcul numérique}
+\begin{itemize}
+	\item Problème de programmation linéaire
+	\item Méthode du simplexe $\rightarrow$ compliqué et lent pour $n>100$
+	\item Approximation ?
+\end{itemize}
+\end{frame}
+
+
+
+\section{Problème régularisé}
+
+\subsection{Transport optimal régularisé}
+
+\begin{frame}{Pénalisation par l'entropie}
+\begin{itemize}
+\item Précédemment~:
+\[K(\gamma) = \sum_{i,j} c_{i,j} \gamma_{i,j} \]
+\pause
+\item Maintenant~:
+\begin{equation*}\label{eq:keps}
+\begin{split}
+K^\epsilon (\gamma) 
+ &= K(\gamma) + \epsilon S(\gamma) \\
+&= \sum_{i,j} c_{i,j} \gamma_{i,j} + \epsilon \sum_{i,j} \gamma_{i,j} \log(\gamma_{i,j}) 
+\end{split}\end{equation*}
+\item $\gamma^\epsilon := \argmin K^\epsilon $
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Conséquences}
+\begin{itemize}
+\item Coefficients tous non nuls
+\item Lissage du plan optimal
+\begin{tabular}{c c}
+\includegraphics[width=4.5cm]{1d_interp_0_5.png} & 
+\includegraphics[width=4.5cm]{1d_interp_18.png} \\
+$\epsilon = 2$ & $\epsilon = 0.05$
+\end{tabular}
+\item Convergence vers le \og vrai \fg plan optimal pour $\epsilon \rightarrow 0$
+\end{itemize}
+\end{frame}
+
+
+
+\subsection{Algorithme de Sinkhorn}
+
+\begin{frame}{Forme de la solution}
+\begin{itemize}
+\item Coefficients non nuls $\rightarrow n^2$ degrés de liberté ?
+\item En fait,
+\[\exists a,b, \quad \gamma^\epsilon = \diag(a) G \diag(b) \]
+où $G_{i,j} = \exp(-c_{i,j}/\epsilon)$
+\item Seulement $2n$ degrés de liberté
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Algorithme}
+\begin{table}[h!]
+\centering
+\caption*{Algorithme de Sinkhorn}
+\label{algorithme}
+\begin{tabular}{|l|}
+\hline
+\'Etant donnés ($(c_{i,j})$, $\epsilon$, $(\mu_i)_{1\le i \le n}$,$(\nu_j)_{1 \le j \le m}$), on pose~: \\
+$a^0 = (1/n, \ldots, 1/n)$\\
+$(G_{i,j}) = (e^{c_{i,j}})$\\
+Puis on itère (jusqu'à ce qu'un critère d'arrêt convenable soit vérifié)~: \\
+$\quad b^{k+1}_j = \nu_j / (G^\transpose a^k)_j$\\
+$\quad a^{k+1}_i = \mu_i /(G b^{k+1})_i$ \\
+\hline
+\end{tabular}
+\end{table}
+\end{frame}
+
+\begin{frame}{Avantages de l'algorithme}
+\begin{itemize}
+\item Simple ($\ne$ prog. linéaire)
+\item Calculs matriciels $\rightarrow$ GPU
+\item Généralisations faciles : algorithme similaire pour calculer des barycentres de transport optimal
+\end{itemize}
+\end{frame}
+
+\section{Applications}
+
+\subsection{Interpolation de formes}
+
+\begin{frame}{Démonstration}
+\texttt{barycentre\_demo.py}
+\end{frame}
+
+\subsection{Nuages de mots}
+
+\begin{frame}{Word Embedding}
+Word Embedding = plongement dans un espace de dimension $N = 300$
+\begin{itemize}
+\item Synonymes proches (ex : frog $\rightarrow$ frogs, toad, litoria, leptodactylidae, rana, lizard, eleutherodactylus)
+\item Relations similaires $\rightarrow$ vecteurs similaires
+\end{itemize}
+\begin{figure}[h!]
+\centering
+\fbox{\includegraphics[width=3cm]{man_woman.jpg}}
+\hspace{1cm}
+\fbox{\includegraphics[width=3cm]{comparative_superlative_small.jpg}}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Idée}
+\begin{itemize}
+\item Texte $\rightarrow$ fréquences
+\item Plongement lexical $\rightarrow$ distance $\rightarrow$ coût de transport
+\item Distance sémantique entre textes
+\item Interpolation sémantique de textes
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Démonstration}
+\texttt{glove\_demo.py}
+\end{frame}
+
+\begin{frame}{Observations}
+\begin{itemize}
+\item Mots \og neutres \fg privilégiés
+\pause
+\item Distances entre textes
+	\begin{itemize}
+	\item Uniquement basé sur le champ lexical
+	\item Classification par auteur
+	\pause
+	\item Rapprochements intéressants~: Woolf, Stevenson et J.K. Rowling
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\section*{Conclusion}
+
+\begin{frame}{Conclusion}
+
+  \begin{itemize}
+  \item
+    Transport optimal $\rightarrow$ \alert{distance} entre mesures de probabilité.
+  \item
+	T.O. régularisé $\rightarrow$ distances et barycentres \alert{faciles à calculer} par Sinkhorn.
+  \item
+    Outil pour des tâches variées~: traitement d'images, machine learning, économie, astrophysique...
+  \end{itemize}
+  
+\end{frame}
+
+
+
+% All of the following is optional and typically not needed. 
+\appendix
+\section<presentation>*{\appendixname}
+\subsection<presentation>*{For Further Reading}
+
+\begin{frame}
+  \frametitle<presentation>{Sources}
+    
+  \begin{thebibliography}{10}
+    
+  \beamertemplatebookbibitems
+  % Start with overview books.
+ 
+\bibitem{santambrogio15}
+Santambrogio, Filipo. \newblock
+\textit{Optimal Transport for Applied Mathematicians}. 
+\newblock Progress in Nonlinear Differential Equations and Their Applications, vol. 87. Birkhäuser, 2015.
+    
+  \beamertemplatearticlebibitems
+  % Followed by interesting articles. Keep the list short. 
+
+    \bibitem{cuturi13}
+Cuturi, Marco. 
+\newblock ``Sinkhorn distances: Lightspeed computation of optimal transport.''
+\newblock \textit{Advances in Neural Information Processing Systems.} 2013.
+
+\bibitem{benamou15}
+Benamou, Jean-David, et al. 
+\newblock ``Iterative Bregman projections for regularized transportation problems.''
+\newblock \textit{SIAM Journal on Scientific Computing} 37.2 (2015): A1111-A1138.
+  \end{thebibliography}
+\end{frame}
+
+\end{document}
+
+

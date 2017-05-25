@@ -185,6 +185,7 @@ def book_list():
 
 def choose_books():
     import sys
+    from random import shuffle
     global titles
     print("Les livres disponibles sont :")
     all = book_list()
@@ -195,7 +196,12 @@ def choose_books():
         print(shape.format(author,filename,i))
     print("Entrez les numéros de livres choisis (exemple : 306,495) :")
     input = sys.stdin.readline()[:-1]
-    chosen = input.split(',')
+    if input[0]=='r':
+        nb = int(input[1:])
+        shuffle(all)
+        chosen = range(nb)
+    else:
+        chosen = input.split(',')
     chosen_paths = [all[int(i)][0] for i in chosen]
     titles = [all[int(i)][2] for i in chosen]
     return chosen_paths
