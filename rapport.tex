@@ -4,6 +4,8 @@
 \DeclareMathOperator{\diag}{\mathbf{diag}}
 \DeclareMathOperator{\Ccal}{\mathcal{C}}
 
+\newcommand{\tab}{\ \ \ \ }
+
 \title{Transport optimal et régularisation}
 \author{Alexis THIBAULT}
 \date{2017}
@@ -258,9 +260,12 @@ Remarquons que, bien que le calcul de $W^\epsilon(\mu,\nu) = K^\epsilon(\gamma^\
 \subsection{Algorithme}
 L'algorithme permettant de calculer $a$ et $b$ est le suivant~:
 
-\begin{tabular}{|p{\textwidth}|}
-\hline \vspace{0pt}
- \label{algorithme}
+\begin{table}[h!]
+\centering
+\caption*{Algorithme de Sinkhorn}
+\label{algorithme}
+\begin{tabular}{|l|}
+\hline
 \'Etant donnés ($(c_{i,j})$, $\epsilon$, $(\mu_i)_{1\le i \le n}$,$(\nu_j)_{1 \le j \le m}$), on pose~: \\
 $a^0 = (1/n, \ldots, 1/n)$\\
 $(G_{i,j}) = (e^{c_{i,j}})$\\
@@ -269,6 +274,7 @@ $\quad b^{k+1}_j = \nu_j / (G^\transpose a^k)_j$\\
 $\quad a^{k+1}_i = \mu_i /(G b^{k+1})_i$ \\
 \hline
 \end{tabular}
+\end{table}
 
 \subsection{Convergence}
 \begin{theoreme}[Convergence et correction de l'algorithme]
@@ -362,9 +368,28 @@ Soit $\epsilon > 0$. Soient $\nu^1, \ldots, \nu^s \in (\IR^{n})^s$ et $\lambda_1
 \]
 \end{definition}
 Autrement dit, $\mu$ est la répartition qui minimise la moyenne pondérée des coûts de transport optimal vers $\nu$~:
-\[ \mu = \argmin \sum_k \lambda_k W_p(\mu,\nu^k) \]
+\[ \mu = \argmin \sum_k \lambda_k W^\epsilon_p(\mu,\nu^k) \]
 
-[TODO algorithme pour le calcul de barycentre]
+Dans le cas du transport régularisé, une variante de l'algorithme de Sinkhorn permet de calculer le barycentre des $(\nu^k)$~:
+
+\begin{table}[h!]
+\centering
+\caption*{Algorithme de Sinkhorn pour le calcul de barycentre}
+\label{algorithme}
+\begin{tabular}{|l|}
+\hline
+\'Etant donnés $(c_{i,j})$, $\epsilon$, $(\nu^1,\ldots,\nu^s)$,$(\lambda_1, \ldots, \lambda_s)$, on pose~: \\
+$b^0 = ones(n,s)$\\
+$(G_{i,j}) = (e^{c_{i,j}})$\\
+Puis on itère (jusqu'à ce qu'un critère d'arrêt convenable soit vérifié)~: \\
+\tab$a^{k+1}_j = \nu^j /(G b^j)$\\
+\tab$q^k = \exp\left(\sum_j \lambda_j \log(b^k_j \odot G a^{k+1}_j) \right)$\\
+\tab$b^{k+1}_j = q^k /(G a^{k+1}_j)$ \\
+\hline
+\end{tabular}
+\end{table}
+La notation $\odot$ désigne le produit élément par élément.
+Dans \ref{benamou15}, il est montré que cet algorithme est correct et que la suite $(q^k)$ converge vers le barycentre du problème régularisé.
 
 \section{Exemples et applications}
 
