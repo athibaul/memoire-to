@@ -166,7 +166,17 @@ def heart(n):
     xx,yy = np.meshgrid(xx,yy)
     return 1.0*(xx**2 + (5*yy/4 - np.sqrt(np.abs(xx)))**2 <= 1)
 
-shapes = [('Un disque','d',one_circle),('Trois disques','ddd',three_circles),('Un carré plein','c',square),('Un carré vide','cv',empty_square),('Un coeur','h',heart),('La lettre O','O',letter_o),('La lettre T','T',letter_t),('La lettre N','N',letter_n)]
+def letter_e(n):
+    xx = np.linspace(0,1,n+1); yy = np.linspace(0,1,n+1); xx,yy = np.meshgrid(xx,yy)
+    square = (0.1<xx) & (xx<0.9) & (0.1<yy) & (yy<0.9)
+    return square & ((xx<0.3) | (yy<0.3) | (yy>0.7) | ((xx<0.7) & (0.4<yy) & (yy<0.6)))
+
+def letter_s(n):
+    xx = np.linspace(0,1,n+1); yy = np.linspace(0,1,n+1); xx,yy = np.meshgrid(xx,yy)
+    square = (0.1<xx) & (xx<0.9) & (0.1<yy) & (yy<0.9)
+    return square & (((xx<0.3) & (yy<0.6)) | (yy<0.3) | (yy>0.7) | ((yy>0.4) & (yy<0.6)) | ((xx>0.7) & (yy>0.4)))
+
+shapes = [('Un disque','d',one_circle),('Trois disques','ddd',three_circles),('Un carré plein','c',square),('Un carré vide','cv',empty_square),('Un coeur','h',heart),('La lettre O','O',letter_o),('La lettre T','T',letter_t),('La lettre N','N',letter_n),('La lettre E','E',letter_e),('La lettre S','S',letter_s)]
 
 ## Partie interactive
 

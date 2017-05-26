@@ -108,8 +108,8 @@
     \begin{itemize}
     \item Monge : par une application 
     $ T :     \IR^d     \rightarrow     \IR^d $ \og proche \fg de l'identité
-    \includegraphics[height=5cm]{transport_monge.png}
     \end{itemize}
+    \begin{center}\includegraphics[height=4cm]{transport_monge.png}\end{center}
     
 \end{frame}
 
@@ -144,6 +144,7 @@
 \begin{frame}{Question de minimisation}
 \begin{itemize}
 \item $c$ coût de transport ponctuel (exemple : distance)
+\item Coût d'un plan de transport~:
 \[
 K(\gamma) = \int_{X\times Y} c\,d\gamma \; ,\quad \text{où} \quad \gamma \in \Pi(\mu,\nu)
 \]
@@ -242,7 +243,7 @@ $\quad a^{k+1}_i = \mu_i /(G b^{k+1})_i$ \\
 
 \subsection{Interpolation de formes}
 
-\begin{frame}{Démonstration}
+\begin{frame}{Démonstration de l'interpolation de formes}
 \texttt{barycentre\_demo.py}
 \end{frame}
 
@@ -300,7 +301,7 @@ Word Embedding = plongement dans un espace de dimension $N = 300$
   \item
 	T.O. régularisé $\rightarrow$ distances et barycentres \alert{faciles à calculer} par Sinkhorn.
   \item
-    Outil pour des tâches variées~: traitement d'images, machine learning, économie, astrophysique...
+    \alert{Outil puissant} pour des tâches variées~: traitement d'images, machine learning, économie, astrophysique...
   \end{itemize}
   
 \end{frame}
@@ -310,34 +311,12 @@ Word Embedding = plongement dans un espace de dimension $N = 300$
 % All of the following is optional and typically not needed. 
 \appendix
 \section<presentation>*{\appendixname}
-\subsection<presentation>*{For Further Reading}
+\subsection<presentation>*{Fin}
 
-\begin{frame}
-  \frametitle<presentation>{Sources}
-    
-  \begin{thebibliography}{10}
-    
-  \beamertemplatebookbibitems
-  % Start with overview books.
- 
-\bibitem{santambrogio15}
-Santambrogio, Filipo. \newblock
-\textit{Optimal Transport for Applied Mathematicians}. 
-\newblock Progress in Nonlinear Differential Equations and Their Applications, vol. 87. Birkhäuser, 2015.
-    
-  \beamertemplatearticlebibitems
-  % Followed by interesting articles. Keep the list short. 
-
-    \bibitem{cuturi13}
-Cuturi, Marco. 
-\newblock ``Sinkhorn distances: Lightspeed computation of optimal transport.''
-\newblock \textit{Advances in Neural Information Processing Systems.} 2013.
-
-\bibitem{benamou15}
-Benamou, Jean-David, et al. 
-\newblock ``Iterative Bregman projections for regularized transportation problems.''
-\newblock \textit{SIAM Journal on Scientific Computing} 37.2 (2015): A1111-A1138.
-  \end{thebibliography}
+\begin{frame}{Merci !}
+\begin{center}
+\includegraphics[height=6cm]{ENS.png}
+\end{center}
 \end{frame}
 
 \end{document}
