@@ -30,10 +30,10 @@ xx = np.linspace(0,10,300)
 fxx = [f(x) for x in xx]
 gxx = [g(x) for x in xx]
 Txx = [T(x) for x in xx]
-#plt.plot(xx,fxx,'--',label='f')
-#plt.fill_between(xx,0,fxx)
-#plt.plot(gxx,xx,'-.',label='g')
-#plt.fill_betweenx(xx,0,gxx)
+plt.plot(xx,fxx,'--',label='$\\mu$')
+plt.fill_between(xx,0,fxx)
+plt.plot(gxx,xx,'-.',label='$\\nu$')
+plt.fill_betweenx(xx,0,gxx)
 plt.plot(xx,Txx,'-',label='T')
-#plt.legend()
+plt.legend()
 plt.show()
