@@ -61,7 +61,7 @@ On identifie $X$ à $\{1,\ldots,n\}$ et $Y$ à $\{1,\ldots,m\}$. Alors $\Pi(\mu,
 
 \subsection{Métrique de Wasserstein}
 On s'intéresse maintenant au coût minimal nécessaire au transport~:
-\[C(\mu,\nu) = \min_{\gamma \in \Pi(\mu,\nu)} K(\gamma) \]
+\[C(\mu,\nu) = \min_{\gamma \in \Pi(\mu,\nu)} K(\gamma). \]
 On peut considérer ce coût comme une sorte de distance entre $\mu$ et $\nu$. Quelques hypothèses supplémentaires sont cependant nécessaires pour pouvoir affirmer que ceci constitue bien une distance au sens mathématique. Il suffit par exemple que $X=Y$ et que le coût soit défini à partir d'une distance \cite{villani08}.
 
 \begin{definition}[Métrique de Wasserstein]
@@ -77,20 +77,20 @@ La positivité et la symétrie sont claires.
 Supposons $W_p(\mu,\nu) = 0$. Alors le plan de transport minimisant $K$ a son support inclus dans la diagonale $\{x=y\}$, et $\nu$ est la mesure image de $\mu$ par l'application identité~; autrement dit $\nu = \mu$.
 
 Prouvons l'inégalité triangulaire. Soient $\mu^1$, $\mu^2$ et $\mu^3$ trois mesures de probabilité sur $X$. Soit $\gamma^{12}$ plan de transport optimal pour $(\mu^1,\mu^2)$ et $\gamma^{23}$ plan de transport optimal pour $(\mu^2,\mu^3)$. On construit alors une loi jointe sur $X^3$ par la formule~:
-\[\gamma^{123}(A) = \frac{\gamma^{12}(A_{12}) \gamma^{23}(A_{23})}{\mu^2(A_2)}\]
+\[\gamma^{123}(A) = \frac{\gamma^{12}(A_{12}) \gamma^{23}(A_{23})}{\mu^2(A_2)} , \]
 où $A_{12}$ est la projection sur les coordonnées 1 et 2 de l'ensemble $A$, et de même pour $A_{13}$ et $A_{2}$~;
-de sorte que les marginales de $\gamma^{123}$ soient $\mu^1$, $\mu^2$ et $\mu^3$. On note \[\gamma^{13}(B) = \sum_{j} \gamma^{123}(\{(x_1,x_2,x_3) \in X^3 \,|\, (x_1,x_3) \in B\})\] Alors~:
+de sorte que les marginales de $\gamma^{123}$ soient $\mu^1$, $\mu^2$ et $\mu^3$. On note \[\gamma^{13}(B) = \sum_{j} \gamma^{123}(\{(x_1,x_2,x_3) \in X^3 \,|\, (x_1,x_3) \in B\}).\] Alors~:
 \[\begin{split}
 W_p(\mu^1,\mu^3) & \le \left( \int_{x_1,x_3} d(x_1,x_3)^p \;d\gamma^{13}(x_1,x_3) \right)^{1/p} \\
 &\le \left( \int_{x_1,x_2,x_3} (d(x_1,x_2) + d(x_2,x_3))^p \;d\gamma^{123}(x_1,x_2,x_3) \right)^{1/p} \\
 & \le \left( \int_{x_1,x_2} d(x_1,x_2)^p \;d\gamma^{12}(x_1,x_2) \right)^{1/p} + \left( \int_{x_2,x_3} d(x_2,x_3)^p \;d\gamma^{23}(x_2,x_3) \right)^{1/p} \\
-& \le W_p(\mu^1,\mu^2) + W_p(\mu^2,\mu^3)
+& \le W_p(\mu^1,\mu^2) + W_p(\mu^2,\mu^3).
 \end{split}\]
 où la troisième inégalité est une application de l'inégalité de Minkowski.
 \end{proof}
 
 Lorsque l'on travaille avec des espaces non compacts, il faut faire attention à ce que les intégrales définissant $W_p$ convergent effectivement. On se restreint donc aux mesures telles qui admettent un \og moment d'ordre $p$\fg, au sens suivant~:
-\[P_p(X) = \left\{\mu \in P(X)\,\middle|\, \int d(x_0,x)^p d\mu(x) < +\infty \right\} \]
+\[P_p(X) = \left\{\mu \in P(X)\,\middle|\, \int d(x_0,x)^p d\mu(x) < +\infty \right\} , \]
 où $x_0 \in X$ est quelconque. Cet espace ne dépend pas de $x_0$.
 
 La topologie induite par $W_p$ sur l'espace $P_p(X)$ vérifie alors des propriétés assez satisfaisantes (prouvées dans \cite{villani08}, page 104)~: 
@@ -106,16 +106,16 @@ On visualise assez bien la preuve de la deuxième partie du théorème dans le c
 \begin{proof}[Démonstration dans le cas où X est un cube]
 On suppose $X = [0;1]^d$.
 Soit $\mu \in P([0;1]^d)$. Pour $n \in \IN$, on peut diviser le cube en $2^{nd}$ cubes $(C_{i_1,\ldots,i_d})_{0 \le i_1,\ldots,i_d < 2^n}$ de côté $2^{-n}$, et considérer la mesure constituée des pics de Dirac normalisés, pris au coin de chaque cube~:
-\[\nu_n = \sum_{0 \le i_1,\ldots,i_d < 2^n} \mu(C_{i_1,\ldots,i_d}) \delta_{a_{i_1,\ldots,i_d}} 
+\[\nu_n = \sum_{0 \le i_1,\ldots,i_d < 2^n} \mu(C_{i_1,\ldots,i_d}) \delta_{a_{i_1,\ldots,i_d}} ,
 \quad \text{où} \quad
-a_{i_1,\ldots,i_d} = 2^{-n}(i_1,\ldots,i_d)^\transpose\]
+a_{i_1,\ldots,i_d} = 2^{-n}(i_1,\ldots,i_d)^\transpose .\]
 Un plan de transport possible de $\mu$ à $\nu_n$ est alors celui qui distribue chaque masse de Dirac sur le cube associé. La distance à parcourir n'étant pas trop grande, le coût du transport est majoré par une quantité qui tend vers 0.
 \[
 \begin{split}
 \forall x \in C_{i_1,\ldots,i_d},\quad d(x,a_{i_1,\ldots,i_d}) & \le 2^{-n} \sqrt{d} \\
 W_p(\mu,\nu_n) &\le \left(\int_{X\times X} d(a,x)^p\,d\gamma(a,x)\right)^{1/p} \\
 &\le \left(\sum_{0 \le i_1,\ldots,i_d < 2^n} \int_{C_{i_1,\ldots,i_d}} d(x,a_{i_1,\ldots,i_d})^p \, d\mu (x) \right)^{1/p} \\
-& \le 2^{-n}\sqrt{d}
+& \le 2^{-n}\sqrt{d} .
 \end{split}
 \]
 Ainsi, $\nu_n \rightarrow_{n \rightarrow +\infty} \mu$.
@@ -133,18 +133,18 @@ Dans le but de calculer le transport optimal de façon plus efficace, une idée 
 On se limite dorénavant aux cas discrets. Le plan de transport s'écrit 
 \begin{equation}\label{eq:pi_discret}
 \Pi(\mu,\nu) = \left\{ \gamma \in \IR_+^{X \times Y} \quad\middle|\quad
-\forall i \in X,\,\sum_{j \in Y} \gamma_{i,j} = \mu_i \quad
+\forall i \in X,\,\sum_{j \in Y} \gamma_{i,j} = \mu_i , \quad
  \text{et} \quad
-\forall j \in Y ,\,\sum_{i \in X} \gamma_{i,j} = \nu_j \right\}
+\forall j \in Y ,\,\sum_{i \in X} \gamma_{i,j} = \nu_j \right\}.
 \end{equation}
 Le coût de transport selon la formulation de Kantorovich (non régularisé), était~:
-\[K(\gamma) = \sum_{i,j} c_{i,j} \gamma_{i,j} \]
+\[K(\gamma) = \sum_{i,j} c_{i,j} \gamma_{i,j}.\]
 On définit maintenant le coût régularisé comme~:
 \begin{equation}\label{eq:keps}
 \begin{split}
 K^\epsilon (\gamma) 
  &= K(\gamma) + \epsilon S(\gamma) \\
-&= \sum_{i,j} c_{i,j} \gamma_{i,j} + \epsilon \sum_{i,j} \gamma_{i,j} \log(\gamma_{i,j}) 
+&= \sum_{i,j} c_{i,j} \gamma_{i,j} + \epsilon \sum_{i,j} \gamma_{i,j} \log(\gamma_{i,j}) . 
 \end{split}\end{equation}
 On appelle $-S(\gamma)$ l'\emph{entropie} de $\gamma$, que l'on prolonge par continuité si certains coefficients de $\gamma$ sont nuls.
 
@@ -162,17 +162,17 @@ Alors pour $(\lambda_k)$ famille finie de réels positifs sommant à 1, on a~:
 S(\gamma) &= \sum_{i,j} \phi(\gamma_{i,j}) \\
 S\left(\sum_k \lambda_k \gamma^k\right) &= \sum_{i,j} \phi\left(\sum_k \lambda_k \gamma^k_{i,j}\right) \\
 & \le \sum_{i,j} \sum_{k} \lambda_k \phi\left(\gamma^k_{i,j}\right) \\
-& \le \sum_{k} \lambda_k S\left(\gamma^k\right)
+& \le \sum_{k} \lambda_k S\left(\gamma^k\right) .
 \end{split}\]
 Pour avoir égalité, il faut avoir égalité dans toutes les inégalités de convexité appliqués à la troisième ligne. Il faut donc que pour tout $i,j$, si $\lambda_k$ et $\lambda_{k'}$ sont non nuls, on ait $\gamma_{i,j}^k = \gamma_{i,j}^{k'}$. Mais alors cela implique que $\gamma^k = \gamma^{k'}$, autrement dit le cas est dégénéré. $S$ est donc bien strictement convexe.
 \item[Coefficients non nuls]
 Montrons que le minimum $\gamma^\epsilon$ n'admet pas de coefficients nuls. Prenons $\gamma$ et $i_0,j_0$ tels que $\gamma_{i_0,j_0} = 0$. Posons $\gamma^u$ le transport associé au couplage indépendant~: $\gamma^u_{i,j} = \mu_i \nu_j$, puis pour $t \in [0;1]$,
-\[ \eta^t = (1-t) \gamma + t \gamma^u \quad \in \Pi(\mu,\nu)\]
+\[ \eta^t = (1-t) \gamma + t \gamma^u \quad \in \Pi(\mu,\nu) .\]
 On remarque que $\gamma^u$ a tous ses coefficients non nuls. On peut considérer la variation du coût en fonction de $t$~:
 \[\begin{split}
 \frac{d}{dt} K^\epsilon(\eta^t) &= \frac{d}{dt}\left( K(\eta^t) + \epsilon S(\eta^t) \right) \\
 & = - K(\gamma) + K(\gamma^u) + \epsilon \sum_{i,j} \frac{d}{dt} \phi((1-t) \gamma_{i,j} + t \gamma^u_{i,j}) \\
-& = f(t) + \epsilon \sum_{\substack{i,j \\ \gamma_{i,j} = 0}} \gamma^u_{i,j}\frac{d\phi}{dt}(t \gamma^u_{i,j}) 
+& = f(t) + \epsilon \sum_{\substack{i,j \\ \gamma_{i,j} = 0}} \gamma^u_{i,j}\frac{d\phi}{dt}(t \gamma^u_{i,j})  ,
 \end{split}\]
 où $f$ est bornée au voisinage de 0. Ainsi, pour $t$ assez petit, les termes de droite tendent vers $-\infty$, et la dérivée est négative. On en conclut que $K^\epsilon(\eta^t) < K^\epsilon(\gamma)$ pour $t>0$ assez petit, donc que $\gamma$ n'était pas un minimum.
 \end{description}
@@ -191,7 +191,7 @@ Notons $\bar{\gamma}$ l'unique minimiseur de l'entropie $S$ sur $\argmin_{\Pi(\m
 On peut pour toute suite de $\epsilon$ tendant vers 0, extraire une sous-suite telle que $\gamma^\epsilon$ admette une limite $\gamma^0$. Montrons que cette limite est toujours $\bar{\gamma}$.
 
 Le minimiseur $\gamma^\epsilon$ de $K^\epsilon$ est également minimiseur de 
-\[C_\epsilon(\gamma) := \frac{K(\gamma) - K_{opt}}{\epsilon} + S(\gamma) \]
+\[C_\epsilon(\gamma) := \frac{K(\gamma) - K_{opt}}{\epsilon} + S(\gamma) .\]
 Du fait que $\bar{\gamma}$ minimise $K$, on a $K - K_{opt} \ge 0$. Ainsi $S(\gamma^\epsilon) \le C_\epsilon(\gamma^\epsilon)$. De plus, comme $\gamma^\epsilon$ minimise $C_\epsilon$, $C_\epsilon(\gamma^\epsilon) \le C_\epsilon(\bar{\gamma}) = S(\bar{\gamma})$. Autrement dit, pour tout $\epsilon$ on a $S(\gamma^\epsilon) \le S(\bar{\gamma})$. Ainsi, par continuité de $S$, $S(\gamma^0) \le S(\bar{\gamma})$.
 
 Montrons que $\gamma^0$ est un minimiseur de $K$. On a $C_\epsilon(\gamma^\epsilon) \le S(\bar{\gamma})$ par le raisonnement précédent. Ainsi~:
@@ -214,7 +214,7 @@ Le Lagrangien associé à $K^\epsilon$~:
 \[
 L(\gamma, p, q) = K^\epsilon(\gamma) +
  \sum_i p_i \left(\sum_j \gamma_{i,j} - \mu_i\right) + 
- \sum_j q_j\left(\sum_i \gamma_{i,j} - \nu_j\right)
+ \sum_j q_j\left(\sum_i \gamma_{i,j} - \nu_j\right) ,
 \]
 admet un point-selle $(\gamma^\epsilon,p^\epsilon,q^\epsilon)$, où $\gamma^\epsilon$ est, comme auparavent, le minimiseur de $K^\epsilon$.
 \end{lemma}
@@ -226,20 +226,20 @@ En effet, pour tout $v \in \IR^{nm}$ assez petit vérifiant $\sum_i v_{i,j} = \s
 K^\epsilon(\gamma^\epsilon + \eta v) &\ge K^\epsilon(\gamma^\epsilon) \\
 K^\epsilon(\gamma^\epsilon) + \eta \langle \nabla K^\epsilon(\gamma^\epsilon) , v \rangle + o(\eta)  &\ge K^\epsilon(\gamma^\epsilon) \\
 K^\epsilon(\gamma^\epsilon) + \eta \langle \nabla K^\epsilon(\gamma^\epsilon) , v \rangle &\ge K^\epsilon(\gamma^\epsilon) \quad \text{pour $\eta$ assez petit} \\
-\langle \nabla K^\epsilon(\gamma^\epsilon) , v \rangle &= 0
+\langle \nabla K^\epsilon(\gamma^\epsilon) , v \rangle &= 0 .
 \end{split}\]
 Le gradient de $K^\epsilon$ en $\gamma^\epsilon$ est donc dans l'orthogonal du noyau de $B : \gamma \mapsto ((\sum_j \gamma_{i,j})_i, (\sum_i \gamma_{i,j})_j)$, c'est-à-dire dans l'image de l'application linéaire transposée $B^\transpose : ((p_i)_i,(q_j)_j) \mapsto (p_i+q_j)_{i,j}$.
 
 Il existe donc $(p^\epsilon,q^\epsilon)$ deux vecteurs tels que~:
 \[\begin{split}
 \nabla K^\epsilon(\gamma^\epsilon) &= B^\transpose (p^\epsilon,q^\epsilon)  \\
-c_{i,j} + \epsilon (1+\log(\gamma_{i,j})) &= p^\epsilon_i + q^\epsilon_j
+c_{i,j} + \epsilon (1+\log(\gamma_{i,j})) &= p^\epsilon_i + q^\epsilon_j .
 \end{split}\]
 
 Montrons qu'alors $(\gamma^\epsilon,p^\epsilon,q^\epsilon)$ est point-selle de $L$.
 
 La première inégalité est ici une égalité, et découle du fait que pour tous $(p,q) \in \IR^{n+m}$, les termes impliquant $p$ et $q$ dans le Lagrangien sont nuls~:
-\[ L(\gamma^\epsilon,p,q) = L(\gamma^\epsilon,p^\epsilon,q^\epsilon) = K^\epsilon(\gamma^\epsilon) \]
+\[ L(\gamma^\epsilon,p,q) = L(\gamma^\epsilon,p^\epsilon,q^\epsilon) = K^\epsilon(\gamma^\epsilon) .\]
 
 La seconde inégalité de point-selle découle du fait que $\gamma^\epsilon$ minimise $K^\epsilon$, et que pour tout $\gamma \in \Pi(\mu,\nu)$ les autres termes du Lagrangien sont nuls.
 \end{proof}
@@ -248,7 +248,7 @@ La seconde inégalité de point-selle découle du fait que $\gamma^\epsilon$ min
 \begin{lemma}
 Pour tout $\epsilon > 0$, le minimiseur $\gamma^\epsilon$ de $K^\epsilon$ est de la forme~:
 \begin{equation}\label{eq:aGb}
-\gamma^\epsilon = \diag(a)\;G\,\diag(b)
+\gamma^\epsilon = \diag(a)\;G\,\diag(b) ,
 \end{equation}
 où $a$ et $b$ sont deux vecteurs, uniques à un facteur près, et $G = (e^{-c_{i,j}/\epsilon})$ est l'exponentielle de $-c/\epsilon$, coefficient par coefficient.
 \end{lemma}
@@ -258,12 +258,12 @@ Le Lagrangien admet un point-selle en $(\gamma^\epsilon,p^\epsilon,q^\epsilon)$,
 0 = \frac{\partial L}{\partial \gamma_{i,j}}
 &= c_{i,j} + \epsilon(1+\log \gamma_{i,j} ) + p_i + q_j \\
 \log \gamma_{i,j} &= \frac{-c_{i,j} - p_i - q_j}{\epsilon} -1\\
-\gamma_{i,j} &= e^{-1/2 - p_i / \epsilon} e^{-c_{i,j}/\epsilon} e^{-1/2 - q_j / \epsilon}
+\gamma_{i,j} &= e^{-1/2 - p_i / \epsilon} e^{-c_{i,j}/\epsilon} e^{-1/2 - q_j / \epsilon} .
 \end{split}\]
 On en déduit l'existence de $a$ et $b$. L'unicité à une constante près vient du fait que l'on doit avoir \[\begin{split}
 \forall i,j,\quad
 a_i - c_{i,j}/\epsilon + b_j &= -1/2 - p_i/\epsilon - c_{i,j} / \epsilon - 1/2 - q_j/ \epsilon \\
-a_i + p_i/\epsilon &= -1 - b_j - q_j/\epsilon
+a_i + p_i/\epsilon &= -1 - b_j - q_j/\epsilon .
  \end{split}\]
 Chaque membre de l'égalité ne dépendant que d'une variable à la fois, on en déduit que la quantité est indépendante de $i$ et $j$~: $a + p/\epsilon = -1-b-q/\epsilon = t \in \IR$. Ce paramètre $t$ détermine alors $a$ et $b$ de façon unique.
 \end{proof}
@@ -284,11 +284,11 @@ L'algorithme permettant de calculer $a$ et $b$ est le suivant \cite{cuturi13}~:
 \begin{tabular}{|l|}
 \hline
 \'Etant donnés ($(c_{i,j})$, $\epsilon$, $(\mu_i)_{1\le i \le n}$,$(\nu_j)_{1 \le j \le m}$), on pose~: \\
-$a^0 = (1/n, \ldots, 1/n)$\\
-$(G_{i,j}) = (e^{c_{i,j}/\epsilon})$\\
+$a^0 = (1/n, \ldots, 1/n)$;\\
+$(G_{i,j}) = (e^{c_{i,j}/\epsilon})$;\\
 Puis on itère (jusqu'à ce qu'un critère d'arrêt convenable soit vérifié)~: \\
-$\quad b^{k+1}_j = \nu_j / (G^\transpose a^k)_j$\\
-$\quad a^{k+1}_i = \mu_i /(G b^{k+1})_i$ \\
+$\quad b^{k+1}_j = \nu_j / (G^\transpose a^k)_j$;\\
+$\quad a^{k+1}_i = \mu_i /(G b^{k+1})_i$; \\
 \hline
 \end{tabular}
 \end{table}
@@ -298,21 +298,21 @@ Intuitivement, l'algorithme impose les contraintes marginales alternativement su
 \begin{theoreme}[Convergence et correction de l'algorithme]
 \label{th:sink_cv}
 Si on note $\gamma^k = \diag(a^k)\;G\,\diag(b^k)$ les résultats des itérations de l'algorithme précédent, la suite $(\gamma^k)$ converge et~:
-\[\lim_{k \rightarrow +\infty} \gamma^k = \gamma^\epsilon\]
+\[\lim_{k \rightarrow +\infty} \gamma^k = \gamma^\epsilon .\]
 \end{theoreme}
 
 Afin de prouver ce résultat, on utilise un raisonnement préliminaire.
 \begin{definition}[Divergence de Kullback-Leibler]
 On définit la \emph{divergence de Kullback-Leibler} par la formule~:
 \begin{equation}\label{eq:kl}
-KL(\gamma | \xi) = \sum_{i,j} \gamma_{i,j} \left(\log\left(\frac{\gamma_{i,j}}{\xi_{i,j}} \right) -1 \right)
+KL(\gamma | \xi) = \sum_{i,j} \gamma_{i,j} \left(\log\left(\frac{\gamma_{i,j}}{\xi_{i,j}} \right) -1 \right) .
 \end{equation}
 \end{definition}
 On peut considérer la divergence comme une façon de mesurer la disparité de deux répartitions.
 \begin{definition}[Projection de Kullback-Leibler]
  \'Etant donnés un convexe fermé $\Ccal$ et une répartition $\xi$, on définit la \emph{projection de Kullback-Leibler} de $\xi$ sur $\Ccal$ par~:
 \begin{equation}\label{eq:pkl}
-P^{KL}_{\Ccal} (\xi) = \argmin_{\gamma \in \Ccal} KL(\gamma | \xi)
+P^{KL}_{\Ccal} (\xi) = \argmin_{\gamma \in \Ccal} KL(\gamma | \xi) .
 \end{equation}
 Ceci définit bien une unique valeur car $KL(\cdot | \xi)$ est une fonctionnelle strictement convexe.
 \end{definition}
@@ -321,7 +321,7 @@ Ceci définit bien une unique valeur car $KL(\cdot | \xi)$ est une fonctionnelle
 \begin{lemma}\label{lemma:bregman}
 Soit $\Ccal_1, \ldots, \Ccal_l$ une famille de sous-espaces affines de l'espace $\IR_{+*}^{nm}$, et $\Ccal = \bigcap_i \Ccal_i$ leur intersection. On prend $\xi_0 \in \IR_{+*}^{nm}$ quelconque, et on construit la suite $(\xi_i)$ par récurrence de la façon suivante (où les indices sont à comprendre modulo $l$)~:
 \[
-\xi_{i+1} = P^{KL}_{\Ccal_{i+1}}(\xi_i)
+\xi_{i+1} = P^{KL}_{\Ccal_{i+1}}(\xi_i) .
 \]
 Alors la suite $(\xi_i)$ converge vers $P^{KL}_{\Ccal} (\xi_0)$. 
 \end{lemma}
@@ -330,20 +330,20 @@ Ce résultat est démontré dans \cite{bregman66}.
 Un dernier résultat intermédiaire est nécessaire afin de pouvoir conclure. On observe qu'à l'aide de la divergence de Kullback-Leibler, le problème de minimisation (\ref{eq:keps}) se réécrit~:
 \[
 \gamma^\epsilon = P^{KL}_{\Pi(\mu,\nu)} (G)
-\quad \text{où} \quad G = e^{-c/\epsilon}
+\quad \text{où} \quad G = e^{-c/\epsilon} .
 \]
 En effet, on a l'identité~:
 \[
 \forall \gamma \in \Pi(\mu,\nu), 
 \quad K^\epsilon(\gamma) 
 = \sum_{i,j} \gamma_{i,j} (c_{i,j} + \epsilon \log(\gamma_{i,j}))
-= \frac{KL(\gamma | G)}{\epsilon} 
+= \frac{KL(\gamma | G)}{\epsilon} .
 \]
 Notons $\Ccal_1$ et $\Ccal_2$ les ensembles~:
 \[
 \Ccal_1 = \left\{ \gamma \in \IR_{+*}^{nm} \;\middle|\; \sum_j \gamma_{i,j} = \mu_i \right\}
 ; \quad
-\Ccal_2 = \left\{ \gamma \in \IR_{+*}^{nm} \;\middle|\; \sum_i \gamma_{i,j} = \nu_j \right\}
+\Ccal_2 = \left\{ \gamma \in \IR_{+*}^{nm} \;\middle|\; \sum_i \gamma_{i,j} = \nu_j \right\} .
 \]
 On a notamment $\Pi(\mu,\nu) = \Ccal_1 \cap \Ccal_2$.
 \begin{lemma}\label{lemma:pkl_c1c2}
@@ -352,26 +352,27 @@ Pour $\gamma \in \IR_{+*}^{nm}$, on a~:
 P^{KL}_{\Ccal_1} (\gamma) = \diag \left(\frac{\mu}{\gamma \One} \right) \gamma
 \quad et \quad
 P^{KL}_{\Ccal_2} (\gamma) = \gamma \diag \left(\frac{\nu}{\gamma^\transpose \One} \right)
+.
 \end{equation}
 Autrement dit, la projection normalise les lignes (respectivement les colonnes) de $\gamma$ afin que le résultat ait la marginale souhaitée.
 \end{lemma}
 \begin{proof}
 Prenons $\gamma \in \IR^{nm}$, et posons $F(\zeta) = KL(\zeta | \gamma)$. Pour $\zeta^* = P^{KL}_{\Ccal_1} (\gamma)$, du fait que $\zeta^*$ minimise $F$ sur $\Ccal_1$ on doit avoir $\nabla F (\zeta^*) \in (\Ccal_1)^\transpose$ (par un raisonnement similaire au lemme \ref{lemma:pt_selle}). Ceci signifie que $(\nabla F (\zeta^*))_{i,j}$ ne dépend pas de $j$. On appelle cette quantité $\lambda_i$. Or le calcul donne~:
 \[
-\left(\nabla F (\zeta^*)\right) _{i,j} = \log \left(\frac{\zeta^*_{i,j}}{\gamma_{i,j}} \right) = \lambda_i
+\left(\nabla F (\zeta^*)\right) _{i,j} = \log \left(\frac{\zeta^*_{i,j}}{\gamma_{i,j}} \right) = \lambda_i .
 \]
 On en déduit que $\zeta^*_{i,j} = \gamma_{i,j} e^{\lambda_i}$. Enfin, comme il faut que $\sum_{j} \zeta^*_{i,j} = \mu_i$, on trouve~:
 \[\begin{split}
 e^{\lambda_i} \sum_j \gamma_{i,j} &= \mu_i \\
 e^{\lambda_i} &= \frac{\mu_i}{\sum_{j} \gamma_{i,j}} \\
-\zeta_{i,j} &= \gamma_{i,j} \frac{\mu_i}{\sum_{j'} \gamma_{i,j'}}
+\zeta_{i,j} &= \gamma_{i,j} \frac{\mu_i}{\sum_{j'} \gamma_{i,j'}} .
 \end{split}\]
 D'où le résultat.
 \end{proof}
 On peut maintenant démontrer la convergence et la correction de l'algorithme.
 \begin{proof}[Démonstration du théorème \ref{th:sink_cv}]
 Le minimiseur $\gamma^\epsilon$ est le projeté de $G$ sur $\Ccal_1 \cap \Ccal_2$ selon la divergence de Kullback-Leibler. L'algorithme consiste à construire la suite des projections alternativement sur $\Ccal_1$ et $\Ccal_2$, comme dans le lemme \ref{lemma:bregman}~:
-\[\gamma^{2k} = a^k G b^k,\quad \gamma^{2k+1} = a^k G b^{k+1}\]
+\[\gamma^{2k} = a^k G b^k,\quad \gamma^{2k+1} = a^k G b^{k+1} .\]
 D'après le lemme \ref{lemma:pkl_c1c2}, il s'agit bien des projections sur les sous-espaces affines $\Ccal_1$ et $\Ccal_2$.
  Ainsi, la suite des itérés converge vers $P^{KL}_{\Pi(\mu,\nu)}(G) = \gamma^\epsilon$. Ceci prouve la convergence de l'algorithme, et que la limite est correcte.
 \end{proof}
@@ -384,11 +385,11 @@ Soit $\epsilon > 0$. Soient $\nu^1, \ldots, \nu^s \in (\IR^{n})^s$ et $\lambda_1
 \[
 \mu = \argmin_{\IR_{+}^{n}} \min_{(\gamma_1 \ldots \gamma_s) \in \Pi_\mu} \sum_k \lambda_k K^\epsilon(\gamma^k) 
 \quad \text{où} \quad
-\Pi_\mu = \Pi(\mu,\nu_1) \times \ldots \times \Pi(\mu,\nu_s)
+\Pi_\mu = \Pi(\mu,\nu_1) \times \ldots \times \Pi(\mu,\nu_s) .
 \]
 \end{definition}
 Autrement dit, $\mu$ est la répartition qui minimise la moyenne pondérée des coûts de transport optimal vers $\nu$~:
-\[ \mu = \argmin \sum_k \lambda_k W^\epsilon_p(\mu,\nu^k) \]
+\[ \mu = \argmin \sum_k \lambda_k W^\epsilon_p(\mu,\nu^k) . \]
 
 Dans le cas du transport régularisé, une variante de l'algorithme de Sinkhorn permet de calculer le barycentre des $(\nu^k)$ \cite{benamou15}~:
 
@@ -399,12 +400,12 @@ Dans le cas du transport régularisé, une variante de l'algorithme de Sinkhorn 
 \begin{tabular}{|l|}
 \hline
 \'Etant donnés $(c_{i,j})$, $\epsilon$, $(\nu^1,\ldots,\nu^s)$,$(\lambda_1, \ldots, \lambda_s)$, on pose~: \\
-$b^0 = ones(n,s)$\\
-$(G_{i,j}) = (e^{c_{i,j}/\epsilon})$\\
+$b^0 = ones(n,s)$;\\
+$(G_{i,j}) = (e^{c_{i,j}/\epsilon})$;\\
 Puis on itère (jusqu'à ce qu'un critère d'arrêt convenable soit vérifié)~: \\
-\tab$\forall j, \quad a^{k+1}_j = \nu^j /(G b^k_j)$\\
-\tab\tab$\quad\mu^{k+1} = \exp\left(\sum_j \lambda_j \log(b^k_j \odot G a^{k+1}_j) \right)$\\
-\tab$\forall j, \quad b^{k+1}_j = \mu^{k+1} /(G a^{k+1}_j)$ \\
+\tab$\forall j, \quad a^{k+1}_j = \nu^j /(G b^k_j)$;\\
+\tab\tab$\quad\mu^{k+1} = \exp\left(\sum_j \lambda_j \log(b^k_j \odot G a^{k+1}_j) \right)$;\\
+\tab$\forall j, \quad b^{k+1}_j = \mu^{k+1} /(G a^{k+1}_j)$; \\
 \hline
 \end{tabular}
 \end{table}
