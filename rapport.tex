@@ -1,9 +1,9 @@
 \input{../utils.tex}
 \usepackage{subcaption}
 
-\DeclareMathOperator{\diag}{\mathbf{diag}}
+\DeclareMathOperator{\diag}{diag}
 \DeclareMathOperator{\Ccal}{\mathcal{C}}
-
+\renewcommand{\epsilon}{\varepsilon}
 \newcommand{\tab}{\ \ \ \ }
 
 \title{Transport optimal et régularisation}
@@ -15,7 +15,7 @@
 \maketitle
 
 \section*{Sommaire}
-La distance de transport optimal est une distance entre histogrammes, qui a de nombreuses applications en machine learning ou en traitement d'images, entre autres. La principale difficulté concrète est que ce problème de programmation linéaire devient très coûteux à résoudre pour plus de quelques centaines de points. Nous présentons ici le problème de transport optimal régularisé, approximant le problème de transport optimal en lissant les solutions. Nous présentons également un algorithme permettant de calculer efficacement la solution du problème régularisé par des opérations matricielles. Un exemple présente l'utilisation de cet algorithme pour l'étude de textes, et montre qu'il parvient à regrouper les ouvrages d'un même auteur à partir du champ lexical utilisé.
+La distance de transport optimal (\cite{villani08}, \cite{santambrogio15}) est une distance entre distributions de probabilité (ou histogrammes, dans le cas discret), qui a de nombreuses applications en machine learning ou en traitement d'images, entre autres. La principale difficulté concrète est que ce problème de programmation linéaire devient très coûteux à résoudre pour plus de quelques centaines de points \cite{pele09}. Nous présentons ici le problème de transport optimal régularisé, approximant le problème de transport optimal en lissant les solutions, ainsi qu'un algorithme (\cite{cuturi13}, \cite{benamou15}) permettant de calculer efficacement la solution du problème régularisé par des opérations matricielles. Un exemple présente l'utilisation de cet algorithme pour l'étude de textes, et montre qu'il parvient à regrouper les ouvrages d'un même auteur à partir du champ lexical utilisé.
 
 
 %\tableofcontents
@@ -523,7 +523,7 @@ Santambrogio, Filipo. \textit{Optimal Transport for Applied Mathematicians}. Pro
 \bibitem{cuturi13}
 Cuturi, Marco. ``Sinkhorn distances: Lightspeed computation of optimal transport.'' \textit{Advances in Neural Information Processing Systems.} 2013.
 \bibitem{bregman66}
-L. M. Bregman. ``The relaxation method of finding the common point of
+Bregman, Lev M. ``The relaxation method of finding the common point of
 convex sets and its application to the solution of problems in convex programming.''
 \textit{USSR computational mathematics and mathematical physics},
 7(3):200–217, 1967.
@@ -532,14 +532,14 @@ Benamou, Jean-David, et al. ``Iterative Bregman projections for regularized tran
 \bibitem{pele09}
 Pele, Ofir and Werman, Michael (2009). \textit{Fast and robust earth mover’s distances}. In ICCV’09.
 \bibitem{kantorovich42}
-L. Kantorovich. ``On the transfer of masses'' (russe). \textit{Doklady Akademii
+Kantorovich, Leonid. ``On the transfer of masses'' (russe). \textit{Doklady Akademii
 Nauk}, 37(2):227–229, 1942.
 \bibitem{agueh11}
 Agueh, Martial, and Carlier, Guillaume. ``Barycenters in the Wasserstein space.'' \textit{SIAM Journal on Mathematical Analysis} 43.2 (2011): 904-924.
 \bibitem{mikolov13}
 Mikolov, Thomas et al. ``Distributed representations of words and phrases and their compositionality.'' \textit{Advances in neural information processing systems}. 2013.
 \bibitem{glove}
-Pennington, Jeffrey, Richard Socher and Christopher D. Manning. ``Glove: Global Vectors for Word Representation.'' \textit{EMNLP}. Vol. 14. 2014.
+Pennington, Jeffrey, Socher, Richard and Manning, Christopher D. ``Glove: Global Vectors for Word Representation.'' \textit{EMNLP}. Vol. 14. 2014.
 \end{thebibliography}
 
 \end{document}
